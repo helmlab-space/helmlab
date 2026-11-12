@@ -1,7 +1,5 @@
 # Helmlab 2026
 
-> **Draft.** This is a working draft of Spec Rev 1. It is not published and nothing in it is final. Items marked **TODO** are not written or not yet checked.
-
 ## 1. Status
 
 | | |
@@ -9,7 +7,7 @@
 | Name | Helmlab 2026 |
 | Identifiers | `helmgen`, `helmgenlch`, `helmlab-metric`, ΔE `helmlab`; reserved: `helmlab-metric-neutral` (Appendix B) |
 | Status | Draft |
-| Revision | Spec Rev 1 (draft of 2026-11-12) |
+| Revision | Spec Rev 1 |
 | Date | Set on publication |
 | DOI | Assigned on publication |
 | Parameter files | `params/gen_params.json` sha256 `310ad1105eeec0aeb72bb8bf24185cda15f62ea8f61822dceca9d61b8a69356f`; `params/metric_params.json` sha256 `a469b93c278e1708ff32aee3308375ea0fccedac75bdeba4d3b85441e279401b` |
@@ -1139,7 +1137,7 @@ ColorAide returns an undefined hue for greys in `helmgenlch`. On these rows the 
 
 The vectors are the files in `vectors/`. A published file never changes and never gains rows; new cases go into a new file, `<set>-<n>.json`. Every file is listed in `SHA256SUMS` and is dedicated to the public domain under CC0 1.0.
 
-`tools/spec/make_vectors.py` produced them in the environment of Appendix A.1; run twice, it gives the same bytes. `tools/spec/check_vectors.py` and `tools/spec/check_vectors.mjs` check the Python and the JavaScript package against them at level R. On 2026-11-12 the Python package (1.0.2) and the npm packages 1.0.0, 1.0.1 and 1.0.2 (Node.js 26.8.1) each passed: 30,742 rows checked, the 1,007 rows at level info skipped, no failures.
+`tools/spec/make_vectors.py` produced them in the environment of Appendix A.1; run twice, it gives the same bytes. `tools/spec/check_vectors.py` and `tools/spec/check_vectors.mjs` check the Python and the JavaScript package against them at level R. On 2026-11-13 the Python package (1.0.2) and the npm packages 1.0.0, 1.0.1 and 1.0.2 (Node.js 26.8.1) each passed: 30,742 rows checked, the 1,007 rows at level info skipped, no failures.
 
 ### 9.1 Sets
 
@@ -1325,7 +1323,7 @@ A rotation other than −28.2° (`abRotateDeg`) and the surround parameter give 
 
 ### A.1 Environment
 
-The rows of the vectors of Section 9 were produced on 2026-11-09; the file headers were last regenerated on 2026-11-12, with the same rows. Environment:
+The rows of the vectors of Section 9 were produced on 2026-11-09; the file headers were last regenerated on 2026-11-13, with the same rows. Environment:
 
 | | |
 |---|---|
