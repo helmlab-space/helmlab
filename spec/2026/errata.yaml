@@ -1,6 +1,7 @@
 # Errata for Helmlab 2026.
 # Identifiers are permanent. The classes K1-K5 are defined in spec.md, Section 11.
-# Outputs of Helmlab 2026 never change; an erratum documents behaviour or corrects text.
+# Outputs of Helmlab 2026 change only within the level R tolerance, as class K3 (spec.md,
+# Sections 2 and 11); an erratum documents behaviour or corrects text.
 
 - id: E-2026-0001
   title: The paper's description of the neutral correction (Stage 10) differs from the reference code

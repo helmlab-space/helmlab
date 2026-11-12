@@ -138,12 +138,16 @@ function maxAbsDiff(got, exp) {
   return worst;
 }
 
-/** L, C and the hue chord C*|dh|, dh in radians wrapped to [-pi, pi], C the expected chroma. */
+/**
+ * L, C and the hue chord C*|dh|, dh in radians wrapped to [-pi, pi], C the expected chroma.
+ * An undefined hue (NaN) counts as dh = pi (spec.md, Section 8).
+ */
 function lchDiff(got, exp) {
   if (got.length !== 3) return Infinity;
   let dh = (got[2] - exp[2]) % 360; // degrees, in (-360, 360)
   if (dh > 180) dh -= 360;
   else if (dh < -180) dh += 360;
+  if (Number.isNaN(got[2])) dh = 180;
   const parts = [Math.abs(got[0] - exp[0]), Math.abs(got[1] - exp[1]), Math.abs(exp[1]) * Math.abs(dh * (Math.PI / 180))];
   if (parts.some(Number.isNaN)) return Infinity;
   return Math.max(...parts);

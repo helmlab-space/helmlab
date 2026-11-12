@@ -66,10 +66,16 @@ def max_abs(got, exp):
 
 
 def chord_diff(got, exp):
-    """L, C and the hue chord C*|dh|; C is the expected chroma."""
-    if not all(math.isfinite(v) for v in got):
+    """L, C and the hue chord C*|dh|; C is the expected chroma.
+
+    An undefined hue (NaN) counts as dh = pi (spec.md, Section 8).
+    """
+    if not (math.isfinite(got[0]) and math.isfinite(got[1])) or math.isinf(got[2]):
         return math.inf  # max() below would drop a NaN that is not its first argument
-    dh = math.remainder(math.radians(got[2] - exp[2]), 2 * math.pi)
+    if math.isnan(got[2]):
+        dh = math.pi
+    else:
+        dh = math.remainder(math.radians(got[2] - exp[2]), 2 * math.pi)
     d = max(abs(got[0] - exp[0]), abs(got[1] - exp[1]), exp[1] * abs(dh))
     return d if not math.isnan(d) else math.inf
 

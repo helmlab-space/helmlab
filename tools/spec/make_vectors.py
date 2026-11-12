@@ -59,7 +59,7 @@ SUMS = SPEC / "SHA256SUMS"
 API_SOURCE = REPO / "packages" / "helmlab-js" / "tests" / "reference" / "reference-1.0.json"
 GENERATOR = "tools/spec/make_vectors.py"
 
-SPEC_REV = "Helmlab 2026, Spec Rev 1 (draft of 2026-11-09)"
+SPEC_REV = "Helmlab 2026, Spec Rev 1 (draft of 2026-11-12)"
 VARIANT = "default: rotation -28.2 degrees, surround S = 0.5"
 
 TOL = {"fwd": 1e-11, "inv": 1e-8, "de": 1e-11}  # level R, absolute, any channel

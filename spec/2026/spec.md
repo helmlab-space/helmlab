@@ -9,7 +9,7 @@
 | Name | Helmlab 2026 |
 | Identifiers | `helmgen`, `helmgenlch`, `helmlab-metric`, ΔE `helmlab`; reserved: `helmlab-metric-neutral` (Appendix B) |
 | Status | Draft |
-| Revision | Spec Rev 1 (draft of 2026-11-09) |
+| Revision | Spec Rev 1 (draft of 2026-11-12) |
 | Date | Set on publication |
 | DOI | Assigned on publication |
 | Parameter files | `params/gen_params.json` sha256 `310ad1105eeec0aeb72bb8bf24185cda15f62ea8f61822dceca9d61b8a69356f`; `params/metric_params.json` sha256 `a469b93c278e1708ff32aee3308375ea0fccedac75bdeba4d3b85441e279401b` |
@@ -31,7 +31,7 @@ Helmlab 2026 defines two colour spaces and one colour difference:
 
 By default `hl.metric` in the helmlab package (Python and JavaScript) returns the neutral-corrected form `helmlab-metric-neutral` (Appendix B), not `helmlab-metric`. ΔE `helmlab` is always computed from `helmlab-metric` coordinates.
 
-The definition is the output of helmlab 1.0.0. These outputs do not change in any later release; helmlab 1.0.1 and 1.0.2 give the same outputs. Releases before 1.0.0 are out of scope.
+The definition is the output of helmlab 1.0.0. The releases 1.0.1 and 1.0.2 give the same outputs, and so do later releases; a change within the level R tolerance of Section 8 is made only as class K3 (Section 11). Releases before 1.0.0 are out of scope.
 
 Normative sources, in order of precedence:
 
@@ -42,15 +42,15 @@ If the reference code and a vector differ within the tolerance of Section 8, the
 
 The description of the mathematics in Section 5 is informative. Earlier descriptions, including the paper (arXiv:2602.23010), differ from the reference code in places (E-2026-0001).
 
-Functions that the helmlab package builds on these spaces (gamut mapping, gradients, palettes, tokens, contrast helpers) are not part of the definition. Their outputs may change in minor releases, where they are listed under "Changed outputs".
+Functions that the helmlab package builds on these spaces (gamut mapping, gradients, palettes, tokens, contrast helpers) are not part of the definition. Their outputs may change in minor releases; `CHANGELOG.md` lists such changes under the heading "Changed outputs".
 
 ## 3. Intended use
 
 *This section is dedicated to the public domain under CC0 1.0, so that implementations can copy it.*
 
 - GenSpace is for generating colours: gradients, palettes and gamut mapping.
-- MetricSpace coordinates are a distance embedding. Use them to compute ΔE `helmlab`. They are not recommended for LCh or hue operations: in the base form a neutral grey has non-zero a and b (a ≈ 0.24, b ≈ 0.15 at Y = 0.18), and L reaches about 2.16 for Rec.2020 colours ([color-space](https://github.com/colorjs/color-space/blob/master/spaces/helmlab-metric.js)).
-- MetricSpace is for SDR content: colours inside the Display P3 or Rec.2020 gamut (Section 7). Above diffuse white, use GenSpace; its grey axis stays neutral to about 1e-15 up to at least Y = 10 (Section 5.3.3).
+- MetricSpace coordinates are a distance embedding. Use them to compute ΔE `helmlab`. They are not recommended for LCh or hue operations: in the base form a neutral grey has non-zero a and b (a ≈ 0.24, b ≈ 0.15 at Y = 0.18), and L reaches about 2.16 for Rec.2020 colours (Section 9.1, `core/grey-0.18`; `conv-1`, row `rec2020/8-0-8`).
+- MetricSpace is for SDR content: colours inside the Display P3 or Rec.2020 gamut (Section 7). Above diffuse white, use GenSpace; its grey axis stays neutral to about 3e-15 up to at least Y = 10 (Section 5.3.3).
 
 Links from these statements to the evidence page will be added when that page is published; adding them is an editorial change (class K1, Section 11).
 
@@ -66,7 +66,7 @@ Links from these statements to the evidence page will be added when that page is
 
 *This section is informative (Section 2).*
 
-It describes the reference code of helmlab 1.0.0 step by step. Parameters appear under their names in the JSON files (Section 6). Where the Python and JavaScript packages compute differently, the text follows the Python package, which produces the test vectors (Appendix A.3). The text was checked by implementing it without access to the reference code and comparing the results with the reference code (Appendix A.4).
+It describes the reference code of helmlab 1.0.0 step by step. Parameters appear under their names in the JSON files (Section 6). Where the Python and JavaScript packages compute differently, the text follows the Python package, which produces the test vectors (Appendix A.3). The draft of 2026-11-09 of this text was checked by implementing it without access to the reference code and comparing the results with the reference code (Appendix A.4).
 
 ### 5.1 Notation
 
@@ -228,7 +228,7 @@ y   = y0                         otherwise (also when den is NaN)
 
 The three results are c = (c0, c1, c2).
 
-Edge cases: x = 0 gives y = 0. There is no upper clip. For x above about 3e192 the products in the Halley step overflow, and GF2 returns +inf or NaN for some inputs; x = +inf gives y = +inf, because den is NaN. GF3 turns an infinite or NaN component into NaN for all three components, so the output is then (NaN, NaN, NaN), never ±inf (reference behaviour, no meaning guarantee).
+Edge cases: x = 0 gives y = 0. There is no upper clip. For x above about 3e192 the products in the Halley step overflow, and GF2 returns +inf, −inf or NaN for some inputs; x = +inf gives y = +inf, because den is NaN. GF3 turns an infinite or NaN component into NaN for all three components, so the output is then (NaN, NaN, NaN), never ±inf (reference behaviour, no meaning guarantee).
 
 **GF3. Neutral blend.** Moves the three components towards their mean when their relative spread is small.
 
@@ -239,7 +239,7 @@ w  = exp(-((r / 1e-5)**2))
 ci = ci + w * (m - ci)           for i = 0, 1, 2
 ```
 
-Edge cases: for r below about 7.5e-14, w = 1 and the three components become equal to m exactly. For r above about 2.73e-4, w = 0 (exp underflows) and the components do not change. Between these values the spread is reduced but not removed. Grey input (Y times the reference white) has r near 1e-16, so its three components become equal. The guard 1e-30 acts whenever abs(m) < 1e-30: r is then smaller than the relative spread, so very dark colours are moved towards grey. For the sRGB primaries the blend starts below Y ≈ 1e-35, and below Y ≈ 1e-45 the output is grey to rounding. For black, m = 0, r = 0 and w = 1. An infinite or NaN component makes all three components NaN.
+Edge cases: for r below about 7.5e-14, w = 1 and the three components become equal to m: exactly when abs(m) >= 1e-30, and to rounding when the guard 1e-30 acts. For r above about 2.73e-4, w = 0 (exp underflows) and the components do not change. Between these values the spread is reduced but not removed. Grey input (Y times the reference white) has r near 1e-16, so its three components become equal. The guard 1e-30 acts whenever abs(m) < 1e-30: r is then smaller than the relative spread, so very dark colours are moved towards grey. For the sRGB primaries the blend starts below Y ≈ 1e-35, and below Y ≈ 1e-45 the output is grey to rounding. For black, m = 0, r = 0 and w = 1. An infinite or NaN component makes all three components NaN.
 
 **GF4. Matrix M2.** Multiplies the blended responses by `M2`.
 
@@ -298,7 +298,7 @@ b = b * q
 
 Edge cases: 1e-30 is added for every colour, not only near zero. `chroma_power - 1` = -0.02200000000000002. a = b = 0 stays 0. For `sqrt(a**2 + b**2)` below about 1e-14 the constant is not negligible, and the resulting a and b stay below 3e-14 in magnitude.
 
-The result of GF7 is the output (L, a, b). For grey input with 0 <= Y <= 10, |a| and |b| are at most 2.5e-15 (reference code, 1001 greys).
+The result of GF7 is the output (L, a, b). For grey input with 0 <= Y <= 10, |a| and |b| are at most 2.9e-15 (reference code, 20,001 greys with Y evenly spaced from 0 to 10, one call of shape (1, 3) per grey; `core/grey-10` gives |a| = 2.8e-15).
 
 #### 5.3.4 Inverse: Lab to XYZ
 
@@ -620,17 +620,17 @@ The output is (L, a, b).
 LMS_c = s * (2.5633498896562767, 3.0420833463457604, 4.462733874281098)        s > 0
 ```
 
-These colours are greyish blues with chromaticity y ≈ 0.276 and x from about 0.18 (Y = 0.001) to 0.27 (Y = 1). For Y from about 0.01 to 0.62 they are inside the sRGB gamut. On the curve h1 is undefined, but L still depends on the hue, through Lh in Step F6, k in Step F7 and G12 in Step F12. The base form is therefore not continuous there: L tends to different values depending on the direction from which a point of the curve is approached. Over 360 directions the limits span 0.025 at Y = 0.007, 0.092 at Y = 0.077, 0.153 at Y = 0.31, 0.196 at Y = 0.49 and 0.245 at Y = 0.70.
+These colours are greyish blues with chromaticity y ≈ 0.276 and x from about 0.18 (Y = 0.001) to 0.27 (Y = 1). For Y from about 0.01 to 0.62 they are inside the sRGB gamut. On the curve h1 is undefined, but L still depends on the hue, through Lh in Step F6, k in Step F7 and G12 in Step F12. The base form is therefore not continuous there: L tends to different values depending on the direction from which a point of the curve is approached. Over 360 directions the limits span 0.025 at Y = 0.007, 0.092 at Y = 0.077, 0.153 at Y = 0.31, 0.196 at Y = 0.49 and 0.244 at Y = 0.70.
 
-On the curve itself a0 and b0 are rounding residue, and the reference returns different L for the same input: XYZ = (0.06564918031540655, 0.07736666851128433, 0.13699287588355347) gives L = 0.4453387746570464 in a one-row call and 0.4085666256969879 as one row of a 64-row call. Near the curve L depends on the rounding of a0 and b0. With C0 = sqrt(a0**2 + b0**2), a one-row call and a 64-row call differ in L by up to 5.5e-13 at C0 = 1e-4, 4.3e-11 at C0 = 1e-6 and 4.4e-10 at C0 = 1e-7. Among the 16,777,216 8-bit sRGB colours the smallest C0 is 7.17e-5 (`#456d85`). The test vectors keep C0 ≥ 1e-4 (Section 9).
+On the curve itself a0 and b0 are rounding residue, and the reference returns different L for the same input: XYZ = (0.06564918031540655, 0.07736666851128433, 0.13699287588355347) gives L = 0.4453387746570464 in a one-row call and 0.4085666256969879 as one row of a 64-row call. Near the curve L depends on the rounding of a0 and b0. With C0 = sqrt(a0**2 + b0**2), a one-row call and a 64-row call differ in L by up to about 2e-12 at C0 = 1e-4, 1e-10 at C0 = 1e-6 and 1e-9 at C0 = 1e-7 (largest differences in samples of 20,000 colours of the domain at each C0, each colour at a random row of the 64-row call; these are not bounds). Among the 16,777,216 8-bit sRGB colours the smallest C0 is 7.17e-5 (`#456d85`). The test vectors keep C0 ≥ 1e-4 (Section 9).
 
 #### 5.5.3 Inverse: (L, a, b) to XYZ
 
 The inverse runs the stages in reverse order. Step In undoes Step F(15 − n). Steps I8, I9 and I11 use Newton iteration with a fixed number of iterations. The hues in Steps I3 to I8 are taken from the values at hand, which can differ in the last bits from the forward values.
 
-For XYZ from the domain the inverse returns the input to rounding. The largest channel difference of XYZ → Lab → XYZ is 5.6e-15 over 400,000 random 8-bit sRGB colours, and 1.0e-13 over 200,000 random XYZ in [0, 1]³, where L reaches 10. Greys return to a relative 1e-12 up to Y ≈ 17.4. From Y ≈ 20.3 the relative error is above 1e-6, and Y = 50 returns Y = 196.9.
+For XYZ from the domain the inverse returns the input to rounding. The largest channel difference of XYZ → Lab → XYZ is 5.6e-15 over 400,000 random 8-bit sRGB colours, and 1.0e-13 over 200,000 random XYZ in [0, 1]³, where L reaches 10 (`numpy.random.default_rng(11)`, the sRGB colours drawn first; one batch call per set). Greys return to a relative 1e-12 up to Y ≈ 17.4. From Y ≈ 20.3 the relative error is above 1e-6, and Y = 50 returns Y = 196.9.
 
-For a triple that is not an output of the forward, the inverse can return an XYZ whose forward is a different triple. At C = 0.05 and C = 0.2, forward(inverse(L, a, b)) returns the triple to 1e-12 only for L between about −0.16 and 1.55 (72 hues; L in steps of 0.01). For example, (−0.25, 0.05, 0) maps to XYZ (−1.818, −1.847, −3.036), whose forward is (5.346, 0, 0) up to rounding.
+For a triple that is not an output of the forward, the inverse can return an XYZ whose forward is a different triple. At C = 0.05 and C = 0.2 (72 hues; L in steps of 0.01), forward(inverse(L, a, b)) returns the triple to 1e-12 for every hue when L is from −0.16 to 1.55 (C = 0.05) or to 1.61 (C = 0.2); it fails for some hues at L = −0.17, at 1.56 (C = 0.05) and at 1.62 (C = 0.2). For example, (−0.25, 0.05, 0) maps to XYZ (−1.818, −1.847, −3.036), whose forward is (5.346, 0, 0) up to rounding.
 
 **Step I1. Undo the rotation (undoes F14).**
 
@@ -912,7 +912,7 @@ For `dist_linear` = 0 the first formula equals Step D6. `dist_compress` is not 0
 
 Input checks of the reference code, not part of the definition: `distance_from_lab` raises `ValueError` if an input is not finite or if |L| > 3 for either input. `MetricSpace.distance(XYZ_1, XYZ_2)` computes both base-form triples with the forward (never with the neutral correction) and then ΔE; it warns, without failing, when the second or third component of an input is below −1e-9. `hl.metric.difference(color_a, color_b)` parses both colour strings to XYZ (Section 5.2) and calls `MetricSpace.distance`.
 
-**Range of the fitting data.** The parameters of MetricSpace were fitted with CMA-ES to a weighted sum of STRESS on three datasets, each adapted to D65 with a Bradford transform: COMBVD (3,813 pairs, weight 0.55), MacAdam 1974 (128 pairs, 0.15) and Helmlab's Human Feedback data (3,552 judgements of 48 colour pairs, made on the observers' own uncalibrated screens, 0.30). He et al. 2022 (82 pairs) was used in model selection. The colour differences of the three fitting datasets:
+**Range of the fitting data.** The parameters of MetricSpace were fitted with CMA-ES to a weighted sum of STRESS on three datasets: COMBVD (3,813 pairs, weight 0.55), MacAdam 1974 (128 pairs, 0.15) and Helmlab's Human Feedback data (3,552 judgements of 48 colour pairs, made on the observers' own uncalibrated screens, 0.30). COMBVD pairs whose white is not (0.95047, 1, 1.08883) were adapted to that white with a Bradford transform. MacAdam 1974 is specified for D65 and the CIE 1964 10° observer; the fitting took its white as x = 0.31272, y = 0.32903, the D65 white of the 1931 observer, and did not adapt it. The Human Feedback colours are sRGB hex values, converted to XYZ (D65) with a 7-decimal sRGB matrix. He et al. 2022 (82 pairs) was used in model selection. The paper describes these data differently (E-2026-0002). The fitting script and the Human Feedback data are not published. The colour differences of the three fitting datasets:
 
 | Dataset | Rows | ΔE `helmlab`: min, median, max | CIEDE2000: min, median, max |
 |---|---|---|---|
@@ -920,7 +920,13 @@ Input checks of the reference code, not part of the definition: `distance_from_l
 | MacAdam 1974 | 128 | 0.054, 0.110, 0.133 | 2.9, 8.8, 15.5 |
 | Human Feedback | 3,552 | 0, 0.119, 0.148 | 0, 10.7, 85.0 |
 
-ΔE `helmlab` is computed after the Bradford transform and CIEDE2000 with each dataset's own white; the Human Feedback rows include judgements of identical colours. Of the 3,989 colour pairs, 7 have a colour darker than L* 10 (4 in COMBVD, 3 in Human Feedback) and none has a colour lighter than L* 92.8 (Section 10).
+ΔE `helmlab` is computed on the XYZ as the fitting used them, and CIEDE2000 on the original XYZ with the white the fitting took for each dataset; the Human Feedback rows include judgements of identical colours. Of the 3,989 colour pairs, 7 have a colour darker than L* 10 (4 in COMBVD, 3 in Human Feedback) and none has a colour lighter than L* 92.8 (Section 10).
+
+The published datasets:
+
+- COMBVD, the combined dataset from which CIEDE2000 was derived: M. R. Luo, G. Cui and B. Rigg, "The development of the CIE 2000 colour-difference formula: CIEDE2000", *Color Research & Application* 26(5), 340–350 (2001), [doi:10.1002/col.1049](https://doi.org/10.1002/col.1049).
+- MacAdam 1974: D. L. MacAdam, "Uniform color scales", *Journal of the Optical Society of America* 64(12), 1691–1702 (1974), [doi:10.1364/JOSA.64.001691](https://doi.org/10.1364/JOSA.64.001691).
+- He et al. 2022: R. He, K. Xiao, M. Pointer, M. Melgosa and Y. Bressler, "Optimizing parametric factors in CIELAB and CIEDE2000 color-difference formulas for 3D-printed spherical objects", *Materials* 15(12), 4055 (2022), [doi:10.3390/ma15124055](https://doi.org/10.3390/ma15124055); data: [doi:10.5281/zenodo.6502724](https://doi.org/10.5281/zenodo.6502724).
 
 ## 6. Parameters
 
@@ -1087,7 +1093,7 @@ MetricSpace, `params/metric_params.json`, sha256 `a469b93c278e1708ff32aee3308375
 
 ## 7. Domain
 
-Outputs inside the domain are defined. Outside it there is no guarantee of meaning. The test vectors record the reference code's behaviour there, at level R, or at level info where that behaviour is not stable (Section 9.4). Implementations MAY return NaN or clip outside the domain. The reference code may add warnings.
+Outputs inside the domain are defined, except near the zero-chroma curve of MetricSpace (both forms), where L depends on the rounding of a0 and b0 (Section 5.5.2); the vectors have no rows there (C0 < 1e-4, Section 9.4). Outside the domain there is no guarantee of meaning. The test vectors record the reference code's behaviour there, at level R, or at level info where that behaviour is not stable (Section 9.4). Implementations MAY return NaN or clip outside the domain. The reference code may add warnings.
 
 | Space | Domain |
 |---|---|
@@ -1105,28 +1111,29 @@ Reasons for these bounds (informative):
 
 ## 8. Conformance
 
-Implementations declare conformance by running the published vectors themselves. There is no certification programme. Please describe an implementation as "conformant with Helmlab 2026" only when it passes the published vectors.
+Implementations declare conformance by running the published vectors themselves. There is no certification programme. Conformance is claimed for each identifier on its own. An implementation conforms for an identifier when it passes, at its level in the table below, the rows of that identifier's ops (Section 9.2; for ΔE `helmlab`, the op `deltaE`). Please describe an implementation as "conformant with Helmlab 2026" only together with the identifiers whose rows it passes, for example "conformant with Helmlab 2026 for `helmgen` and `helmgenlch`". `api-1.0-1.json` is not used for conformance.
 
 | Level | Who, on which rows | Tolerance, absolute, per channel |
 |---|---|---|
 | R | The helmlab Python and JavaScript packages, on the rows at level U and R | Forward coordinates and ΔE ≤ 1e-11; inverses (XYZ) ≤ 1e-8 |
 | U | Other implementations, on the rows at level U | Forward coordinates and ΔE ≤ 1e-10; inverses (XYZ) ≤ 1e-8 |
-| G (optional) | 8-bit hex round trip | All 16,777,216 colours round-trip as in the reference code |
+| G (optional) | Any implementation, for each space it provides, on all 16,777,216 colours `#rrggbb` | Each colour goes through the implementation's sRGB to XYZ conversion, the forward, the inverse and the inverse of that sRGB conversion, without gamut mapping. Each channel times 255, rounded to the nearest integer, gives `#rrggbb` again |
 
 - An implementation reads the XYZ inputs, and compares the XYZ outputs, in its own frame: `xyz-astm-d65` or `xyz-css-d65` (Section 9.3). Values of the other frame change the forward outputs by up to 2.0e-4 on `conv-1` and 1.7e-3 on the other sets (measured for an implementation in `xyz-css-d65` given the `xyz-astm-d65` values), so they fail level U.
-- LCh outputs are compared as L, C and the hue chord C·|Δh|, where Δh is the difference of the two hues in radians, wrapped to [−π, π], and C is the expected chroma. The chord has the tolerance of the coordinates. A hue in degrees magnifies a difference in a and b by (180/π)/C, so a fixed tolerance on h cannot be met near grey (Section 5.4).
+- LCh outputs are compared as L, C and the hue chord C·|Δh|, where Δh is the difference of the two hues in radians, wrapped to [−π, π], and C is the expected chroma. The chord has the tolerance of the coordinates. A hue in degrees magnifies a difference in a and b by (180/π)/C, so a fixed tolerance on h cannot be met near grey (Section 5.4). An undefined hue (NaN, or `none` in CSS) counts as Δh = π, a chord of C·π.
 - Rows at level info are checked at no level (Section 9.4).
-- Iterative results, such as the cusp and the maximum chroma, are informative.
+- Outputs of package functions outside the definition (Section 2), such as the cusp and the maximum chroma, are informative.
+- The Python reference passes level G in `helmgen`, `helmgenlch`, `helmlab-metric` and `helmlab-metric-neutral`. The largest change is 2.6e-4 of an 8-bit step (`#0affff`), the same as that of its sRGB conversion (Section 5.2) alone.
 
-**Other implementations, measured on 2026-11-12.** Each library was run on the rows at level U of every vector file. All three read XYZ in the frame `xyz-css-d65`; in `xyz-astm-d65` they miss the tolerances by up to 1.7e-3 (forward) and 3.4e-3 (inverse), as Section 9.3 leads one to expect.
+**Other implementations, measured on 2026-11-12.** Each library was run on the rows at level U of every vector file, with the scripts in `tools/spec/ports/`. All three read XYZ in the frame `xyz-css-d65`; in `xyz-astm-d65` they miss the tolerances by up to 1.7e-3 (forward) and 3.4e-3 (inverse), as Section 9.3 leads one to expect.
 
 | Implementation | Checked | Result at level U (largest difference) |
 |---|---|---|
 | Color.js 0.7.0 and 0.7.1 | `helmgen`, `helmgenlch`, `helmlab-metric`, ΔE `helmlab` | Passes every row: forward 1.1e-12, inverse 4.8e-14, ΔE 2.1e-13 |
-| ColorAide 8.9 and 8.14.1 | `helmgen`, `helmgenlch`, `helmlab-metric`, ΔE `helmlab` | The three spaces pass every row: forward 2.8e-13, inverse 6.6e-13. ΔE `helmlab` fails all 2,000 rows, by up to 0.25: ColorAide uses the ΔE parameters of helmlab 0.6.0, which helmlab 0.9.1 replaced |
-| color-space 3.5.0 and 3.6.0 | `helmgen`, `helmgenlch`, and its `helmlab-metric` on the rows of Appendix B | Passes every row: forward 9.5e-15, inverse 7.0e-13. Its `helmlab-metric` is the neutral-corrected form, so on the base-form rows it differs by up to 0.24 |
+| ColorAide 8.9 and 8.14.1 | `helmgen`, `helmgenlch`, `helmlab-metric`, ΔE `helmlab` | The three spaces pass every row: forward 2.8e-13, inverse 6.6e-13. ΔE `helmlab` fails all 2,000 rows, by up to 0.25: ColorAide uses the ΔE parameters of helmlab 0.2.0 to 0.9.0, which helmlab 0.9.1 replaced |
+| color-space 3.5.0 and 3.6.0 | `helmgen`, `helmgenlch`, and its `helmlab-metric` on the rows of Appendix B | Passes every row: forward 9.5e-15, inverse 7.0e-13. Its `helmlab-metric` is the neutral-corrected form, so on the base-form rows it differs by up to 0.24 in the forward and by up to 42 in the inverse (XYZ, row `rec2020/8-0-8` of `conv-1`) |
 
-ColorAide returns an undefined hue for greys in `helmgenlch`. The check charged an undefined hue the largest possible chord, C·π; for these rows it stays below the tolerance.
+ColorAide returns an undefined hue for greys in `helmgenlch`. On these rows the chord C·π stays below the tolerance.
 
 ## 9. Test vectors
 
@@ -1242,7 +1249,8 @@ Where the inputs come from (informative; the `src` field of a row and the `group
 
 1. Choose the frame of the implementation's XYZ. Read the inputs of forward rows, and the expected outputs of inverse rows, in that frame. ΔE rows give the base coordinates `lab1` and `lab2` as input.
 2. Check every `U` row; the helmlab packages also check every `R` row. Skip `info` rows.
-3. Compare each channel with the tolerance of the level (Section 8). For `helmgenlch`, compare L, C and the hue chord C·|Δh|.
+3. Compare each channel with the tolerance of the level (Section 8). For `helmgenlch`, compare L, C and the hue chord C·|Δh|; an undefined hue counts as Δh = π.
+4. Level G (optional): run the round trip of Section 8 on all 16,777,216 colours, for each space the implementation provides.
 
 ## 10. Known limitations
 
@@ -1251,13 +1259,13 @@ Where the inputs come from (informative; the `src` field of a row and the `group
 | GenSpace lightness | A piecewise-linear lightness correction with 19 knots; its slope jumps by up to 0.42 (at L = 0.15), and the darkest 5% of L is compressed about five times (slope 0.19) | Section 5.3.2 (knot table) |
 | GenSpace negative LMS | Negative LMS values are clipped. For such input, XYZ → Lab → XYZ changes XYZ by up to 0.227 (566 of 20,000 random XYZ in [−0.05, 1.2]³) | Section 5.3.5 |
 | GenSpace inverse | Iterative (Halley's method). Near grey the round trip changes the colour by up to 2.5e-5 × Y; very dark colours (Y below about 1e-35) are moved towards grey | Sections 5.3.3 and 5.3.5 |
-| GenSpace in sRGB | Small separate in-gamut regions near h ≈ 260°, from the roots of the cubic in the inverse | helmlab README; [color.js#81](https://github.com/color-js/color.js/issues/81) |
-| MetricSpace above white | L grows quickly: about 1.80 at Y = 3 and 19 at Y = 10. The inverse returns greys to a relative 1e-12 up to Y ≈ 17 and fails above Y ≈ 20; the neutral-corrected form only up to Y ≈ 4.3 | helmlab 1.0.1 README (L); Sections 5.5.3 and B.2 (round trip) |
+| GenSpace in sRGB | Small separate in-gamut regions near h ≈ 260°, from the roots of the cubic in the inverse (Step GI6) | helmlab 1.0.2 README |
+| MetricSpace above white | L grows quickly: about 1.80 at Y = 3 and 19 at Y = 10. The inverse returns greys to a relative 1e-12 up to Y ≈ 17 and fails above Y ≈ 20; the neutral-corrected form only up to Y ≈ 4.3 | helmlab 1.0.2 README (L); Sections 5.5.3 and B.2 (round trip) |
 | MetricSpace inverse outside the domain | Can be ill-conditioned. A change of 1e-12 in one input coordinate moved XYZ by up to 1e25 for bright Rec.2020 magentas with Y ≤ 1, and by up to 1.9 for greys from Y ≈ 3.9 to 10.1 (both forms). The vectors mark such rows `info` | Sections 7 and 9.4 |
 | MetricSpace zero-chroma curve | L is not continuous on a curve of greyish blues (y ≈ 0.276) where the internal chroma is 0. Inside the sRGB gamut (Y from 0.01 to 0.62) the limits of L differ by up to about 0.2, and the reference returns different L for different call shapes | Section 5.5.2 |
 | MetricSpace near black | The lightness axis is steep near black. ΔE `helmlab` is 0.0734 for `#010101` against `#000000` and 0.0290 for `#ffffff` against `#f7f7f7`; CIEDE2000 gives 0.157 and 1.60. Of the 3,989 colour pairs of the fitting data (Section 5.6), 7 have a colour darker than L* 10 and none has a colour lighter than L* 92.8, so below L* ≈ 10 ΔE `helmlab` rests on 7 pairs and above L* ≈ 93 on none | [helmlab#5](https://github.com/helmlab-space/helmlab/issues/5); Section 5.6 |
-| Fitting data | GenSpace was selected with CMA-ES on ColorBench v1 win counts. MetricSpace was fitted to COMBVD, MacAdam 1974 and Helmlab's Human Feedback data, and He et al. 2022 was used in model selection (Section 5.6). Figures on these datasets are in-sample. | helmlab README |
-| Neutral-corrected form (Appendix B) | Greys are kept neutral only up to Y = 2 (grey chroma at most 8.0e-4). Above Y = 2 the grey chroma grows to 0.073 at Y = 2.59, 0.11 at Y = 3 and 0.14 from Y ≈ 4 | [helmlab#4](https://github.com/helmlab-space/helmlab/issues/4); helmlab 1.0.1 README |
+| Fitting data | GenSpace was selected with CMA-ES on ColorBench v1 win counts. MetricSpace was fitted to COMBVD, MacAdam 1974 and Helmlab's Human Feedback data, and He et al. 2022 was used in model selection (Section 5.6). Figures on these datasets are in-sample. | helmlab 1.0.2 README |
+| Neutral-corrected form (Appendix B) | Greys are kept neutral only up to Y = 2 (grey chroma at most 8.0e-4). Above Y = 2 the grey chroma is 0.073 at Y = 2.59, 0.11 at Y = 3, about 0.14 for Y from 4 to 10, above 0.9 from Y ≈ 10.92 and 3.8 at Y = 100 | Appendix B; [helmlab#4](https://github.com/helmlab-space/helmlab/issues/4) |
 | `jnd()` | Divides ΔE by 0.0356, from a fixed confidence model (47 pairs, one session). Not part of this definition. | Reference code |
 
 ## 11. Errata, changes and identifier history
@@ -1269,6 +1277,7 @@ The errata are listed in `errata.yaml`.
 | Identifier | Summary | Class | Status |
 |---|---|---|---|
 | E-2026-0001 | The paper describes the neutral correction (Stage 10) with 384 grey levels for Y from 0.001 to 2.59. The reference code uses 255 levels and holds the correction constant above L ≈ 1.341. The code governs. | K2 | Documented; outputs unchanged |
+| E-2026-0002 | The paper says MetricSpace was trained on COMBVD and cross-validated on He et al. 2022 and MacAdam 1974, and calls MacAdam 1974 held-out. The parameters were fitted to COMBVD, MacAdam 1974 and Helmlab's Human Feedback data (Section 5.6), so results on all three are in-sample. | K2 | Documented; outputs unchanged |
 
 ### Change classes
 
@@ -1280,14 +1289,14 @@ The errata are listed in `errata.yaml`.
 | K4 Output change | Any vector output changes beyond tolerance | Not allowed; goes to the next definition |
 | K5 Registration | New vector file, conformance row, reserved identifier, or a single ΔE replacing the previous one | Allowed; new Spec Rev and DOI |
 
-Classes K1 and K2 need a commit only. Each spec edition receives at most two correction packages; then a new edition is issued.
+Classes K1 and K2 need a commit only. A Spec Rev receives at most two rounds of K1 and K2 corrections; later corrections go into a new Spec Rev.
 
 ### Identifier history
 
 | Implementation | Form | Conformance |
 |---|---|---|
 | Color.js 0.7.x ("experimental", registered by default) | Base | Level U, including ΔE (0.7.0 and 0.7.1, Section 8) |
-| ColorAide 8.9 and later (not registered by default) | Base | Spaces at level U (8.9 and 8.14.1, Section 8); ΔE `helmlab` does not conform (parameters of helmlab 0.6.0) |
+| ColorAide 8.9 and later (not registered by default) | Base | Spaces at level U (8.9 and 8.14.1, Section 8); ΔE `helmlab` does not conform (parameters of helmlab 0.2.0 to 0.9.0) |
 | helmlab: `hl.metric`; postcss-helmlab `helmlab()` and `helmlch()` | Neutral-corrected | Conforms to Appendix B |
 | color-space 3.5.0 and 3.6.0, under the name `helmlab-metric` | Neutral-corrected | Appendix B at level U (Section 8) |
 
@@ -1305,9 +1314,9 @@ A rotation other than −28.2° (`abRotateDeg`) and the surround parameter give 
 - No candidate definition is proposed to any library before it passes a blind test.
 - Bundle size matters to downstream users: in WordPress Gutenberg [PR #80272](https://github.com/WordPress/gutenberg/pull/80272), `build/scripts/theme/index.min.js` grew by 3.54 kB gzip (+15.67%), and a reviewer attributed the increase to Helmlab.
 
-## 13. License, citation and evidence
+## 13. Licence, citation and evidence
 
-- This document is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Section 3, the parameter files and the test vectors are dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The reference code is under the MIT license.
+- This document is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Section 3, the parameter files and the test vectors are dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The reference code is under the MIT License.
 - Patents: the editor has not applied for and will not apply for patents on the methods in this document. No employer or institution holds rights in this work.
 - Citation: Görkem Yıldız, *Helmlab 2026*, Spec Rev 1. DOI: assigned on publication. Paper: [arXiv:2602.23010](https://arxiv.org/abs/2602.23010).
 - This document contains no performance figures. They will be published on the evidence page of helmlab.space, each with its dataset, its size (n) and whether that data was used to fit, tune or design the model. The link will be added when the page is published (class K1).
@@ -1369,7 +1378,7 @@ Largest differences between the npm packages and the expected outputs of the vec
 
 ### A.4 How Section 5 was checked
 
-On 2026-11-09, one implementation of GenSpace and one of MetricSpace were written from the text of Section 5 alone, without access to the reference code, and compared with the reference code (Python, `src/helmlab` identical to v1.0.0, batch calls). Largest absolute differences:
+On 2026-11-09, one implementation of GenSpace and one of MetricSpace were written from that day's draft of Section 5 alone, which then also held what is now Appendix B (`tools/spec/cleanroom/README.md` maps the numbering), without access to the reference code, and compared with the reference code (Python, `src/helmlab` with the files of tag `v1.0.0` and the version string "1.0.1", batch calls). Largest absolute differences:
 
 | Set | Rows | GenSpace | MetricSpace base form |
 |---|---|---|---|
@@ -1388,12 +1397,12 @@ The two implementations and their test scripts are in `tools/spec/cleanroom/`.
 
 ## Appendix B. Neutral-corrected form: `helmlab-metric-neutral`
 
-The neutral-corrected form is MetricSpace with the neutral correction applied. Its identifier is reserved as `helmlab-metric-neutral`. Its outputs are those of helmlab 1.0.0 and do not change; its vectors are the `neutral` set.
+The neutral-corrected form is MetricSpace with the neutral correction applied. Its identifier is reserved as `helmlab-metric-neutral`. Its outputs are those of helmlab 1.0.0 and change only as Section 2 allows; its vectors are the `neutral` set.
 
 - `hl.metric` in the helmlab package, `helmlab()` and `helmlch()` in postcss-helmlab, and `helmlab-metric` in color-space 3.5.0 and 3.6.0 give this form.
 - ΔE `helmlab` is computed from base coordinates, not from neutral-corrected coordinates (B.3).
 - The correction table can be built with Steps N1 to N6 or read from the released file `neutral-lut.json` (B.1). The two differ by less than 1e-12 in each component of the correction.
-- The correction keeps greys neutral only up to Y = 2, the grey of the last knot x_254. For Y ≤ 2 the grey chroma is at most 8.0e-4 (3.3e-5 for Y from 0.01 to 1). Above Y = 2 the correction is constant, so the grey chroma grows: 0.073 at Y = 2.59, 0.11 at Y = 3 and about 0.14 from Y ≈ 4 (Section 10).
+- The correction keeps greys neutral only up to Y = 2, the grey of the last knot x_254. For Y ≤ 2 the grey chroma is at most 8.0e-4 (at Y ≈ 9e-5); it is at most 3.3e-5 for Y from 0.01 to 1 and 3.6e-7 for Y from 1 to 1.9916. In the last knot interval, Y from 1.9916 to 2, it reaches 1.5e-4 near Y = 1.997: Step N5 makes the derivative at x_254 zero while the grey values (a5, b5) still change with L there. Above Y = 2 the correction is constant while the grey values keep changing: the grey chroma is 0.073 at Y = 2.59, 0.11 at Y = 3, about 0.14 for Y from 4 to 10, above 0.9 from Y ≈ 10.92 and 3.8 at Y = 100 (Section 10).
 
 ### B.1 Neutral correction
 
@@ -1420,7 +1429,7 @@ linspace(s, e, n)[n - 1] = e
 XYZ_j = (Y_j*0.95047, Y_j*1.0, Y_j*1.08883)
 ```
 
-**Step N3. Grey coordinates.** Each XYZ_j goes through Steps F1 to F12 of the base form. Neither the neutral correction nor the rotation of Step F14 is applied. The results are (L3_j, a5_j, b5_j).
+**Step N3. Grey coordinates.** Each XYZ_j goes through Steps F1 to F12 of the base form. Neither the neutral correction nor the rotation of Step F14 is applied. The results are (L3_j, a5_j, b5_j). The Python reference evaluates the 257 greys in one call of shape (257, 3), so the triples carry the rounding of a batch call (Appendix A.2): they differ from the left-to-right sums of Section 5.1 by up to 2.2e-15 per component. An implementation that builds the table with those sums matches the reference only to within such differences; the tolerances of Section 8 allow for them.
 
 **Step N4. Sorting and duplicates.** The 257 triples are sorted by L3 in ascending order. Then, going through the sorted list, the triple at position i ≥ 1 is kept only if
 
@@ -1503,7 +1512,7 @@ For L ≤ 0 it returns entry 0. For L ≥ 2.59 it returns entry 257. Both table 
 
 ### B.2 Round trip
 
-The neutral-corrected inverse returns greys to a relative 1e-12 only up to Y ≈ 4.3, and to 1e-6 up to Y ≈ 5.1; the base form does so up to Y ≈ 17.4 (Section 5.5.3). On a grid of step 0.01 the first failures are at Y = 4.31 and 5.15 in Python and at 4.28 and 5.17 in JavaScript 1.0.1 and 1.0.2; in the base form both first fail at 17.4.
+The neutral-corrected inverse returns greys to a relative 1e-12 only up to Y ≈ 4.3, and to 1e-6 up to Y ≈ 5.1; the base form does so to 1e-12 up to Y ≈ 17.4 and to 1e-6 up to Y ≈ 20.3 (Section 5.5.3). On a grid of step 0.01 (relative difference in each XYZ channel) the first failures are at Y = 4.31 and 5.15 in Python and at 4.28 and 5.17 in JavaScript 1.0.0, 1.0.1 and 1.0.2; in the base form they are at 17.40 and 20.31 in both packages.
 
 On the vectors, the JavaScript neutral-corrected inverse differs from the expected outputs by up to 1.1e-9 on rows at level U (`rec2020/8-0-8`) and 4.0e-9 on rows at level R (`grey/796`). Level R allows 1e-8 for inverses (Section 8). For the greys from Y ≈ 3.9 to 10.1, a change of 1e-12 in the input moves the neutral-corrected inverse by more than 1e-8, and by up to 1.9. There the JavaScript and Python neutral-corrected inverses differ by up to 0.66 (`grey/573`, Y = 5.25), and the vectors mark these rows `info` (Section 9.4).
 

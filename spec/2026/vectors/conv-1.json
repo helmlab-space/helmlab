@@ -2,7 +2,7 @@
  "name": "Helmlab 2026 test vectors",
  "set": "conv",
  "file": "conv-1.json",
- "spec": "Helmlab 2026, Spec Rev 1 (draft of 2026-11-09)",
+ "spec": "Helmlab 2026, Spec Rev 1 (draft of 2026-11-12)",
  "license": "CC0-1.0",
  "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
  "params_sha256": {
@@ -77,7 +77,7 @@
  },
  "generator": {
   "path": "tools/spec/make_vectors.py",
-  "sha256": "9ed0468705e5ba9f5f0dbc5e0a8659e6685887e9e43f29aebe15f6a2724290b7"
+  "sha256": "9770cc09e32ad10392d0f9515b764404470877ee79b711d499498083064c9782"
  },
  "variant": "default: rotation -28.2 degrees, surround S = 0.5",
  "frames": {
