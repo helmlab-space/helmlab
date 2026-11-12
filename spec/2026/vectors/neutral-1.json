@@ -11,9 +11,9 @@
  },
  "reference": {
   "package": "helmlab (Python), loaded from src/helmlab of the repository",
-  "version": "1.0.1",
-  "source_tree": "b34eb4301ad06e8e98f1d75a9bb513fa27465e67",
-  "note": "source_tree is the git tree id of src/helmlab. Its files equal tag v1.0.0 (commit 96a0f16) except the version string in __init__.py (\"1.0.1\") and docstrings in src/helmlab/helmlab.py (same syntax tree once docstrings are removed).",
+  "version": "1.0.2",
+  "source_tree": "0bb705b9571ccdce897dabbec9199930ae0f5a3a",
+  "note": "source_tree is the git tree id of src/helmlab. Its files equal tag v1.0.0 (commit 96a0f16) except the version string in __init__.py (\"1.0.2\") and docstrings in src/helmlab/helmlab.py (same syntax tree once docstrings are removed).",
   "calling_convention": "One reference call with an input of shape (1, 3) per input (spec Appendix A.2); GenSpace(), MetricSpace(), MetricSpace(neutral_correction=True) and Helmlab() are built once and reused.",
   "calls": {
    "helmlab-metric-neutral.fwd": "MetricSpace(neutral_correction=True).from_XYZ(xyz.reshape(1, 3))[0]",

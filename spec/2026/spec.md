@@ -31,7 +31,7 @@ Helmlab 2026 defines two colour spaces and one colour difference:
 
 By default `hl.metric` in the helmlab package (Python and JavaScript) returns the neutral-corrected form `helmlab-metric-neutral` (Appendix B), not `helmlab-metric`. ΔE `helmlab` is always computed from `helmlab-metric` coordinates.
 
-The definition is the output of helmlab 1.0.0. These outputs do not change in any later release; helmlab 1.0.1 gives the same outputs. Releases before 1.0.0 are out of scope.
+The definition is the output of helmlab 1.0.0. These outputs do not change in any later release; helmlab 1.0.1 and 1.0.2 give the same outputs. Releases before 1.0.0 are out of scope.
 
 Normative sources, in order of precedence:
 
@@ -50,7 +50,7 @@ Functions that the helmlab package builds on these spaces (gamut mapping, gradie
 
 - GenSpace is for generating colours: gradients, palettes and gamut mapping.
 - MetricSpace coordinates are a distance embedding. Use them to compute ΔE `helmlab`. They are not recommended for LCh or hue operations: in the base form a neutral grey has non-zero a and b (a ≈ 0.24, b ≈ 0.15 at Y = 0.18), and L reaches about 2.16 for Rec.2020 colours ([color-space](https://github.com/colorjs/color-space/blob/master/spaces/helmlab-metric.js)).
-- MetricSpace is for SDR content: colours inside the Display P3 or Rec.2020 gamut (Section 7). Above diffuse white, use GenSpace; its grey axis stays neutral to about 1e-15 up to at least Y = 10 (helmlab 1.0.1 README).
+- MetricSpace is for SDR content: colours inside the Display P3 or Rec.2020 gamut (Section 7). Above diffuse white, use GenSpace; its grey axis stays neutral to about 1e-15 up to at least Y = 10 (Section 5.3.3).
 
 Links from these statements to the evidence page will be added when that page is published; adding them is an editorial change (class K1, Section 11).
 
@@ -710,7 +710,7 @@ repeat 12 times:
 L1 = x
 ```
 
-The update runs exactly 12 times; there is no other stop rule. The derivative gd ignores the clip. JavaScript 1.0.1 stops as soon as an update leaves x unchanged, which gives the same result as running all 12 of its own updates; JavaScript 1.0.0 runs all 12. The JavaScript update expressions are associated differently from the ones above, so its iterates can differ in the last bits (Appendix A.3).
+The update runs exactly 12 times; there is no other stop rule. The derivative gd ignores the clip. JavaScript 1.0.1 and 1.0.2 stop as soon as an update leaves x unchanged, which gives the same result as running all 12 of their own updates; JavaScript 1.0.0 runs all 12. The JavaScript update expressions are associated differently from the ones above, so its iterates can differ in the last bits (Appendix A.3).
 
 **Step I9. Undo the lightness correction (undoes F6).** Newton iteration on the polynomial of Step F6.
 
@@ -1132,7 +1132,7 @@ ColorAide returns an undefined hue for greys in `helmgenlch`. The check charged 
 
 The vectors are the files in `vectors/`. A published file never changes and never gains rows; new cases go into a new file, `<set>-<n>.json`. Every file is listed in `SHA256SUMS` and is dedicated to the public domain under CC0 1.0.
 
-`tools/spec/make_vectors.py` produced them in the environment of Appendix A.1; run twice, it gives the same bytes. `tools/spec/check_vectors.py` and `tools/spec/check_vectors.mjs` check the Python and the JavaScript package against them at level R. On 2026-11-09 the Python package and the npm packages 1.0.0 and 1.0.1 (Node.js 26.8.1) each passed: 30,742 rows checked, the 1,007 rows at level info skipped, no failures.
+`tools/spec/make_vectors.py` produced them in the environment of Appendix A.1; run twice, it gives the same bytes. `tools/spec/check_vectors.py` and `tools/spec/check_vectors.mjs` check the Python and the JavaScript package against them at level R. On 2026-11-12 the Python package (1.0.2) and the npm packages 1.0.0, 1.0.1 and 1.0.2 (Node.js 26.8.1) each passed: 30,742 rows checked, the 1,007 rows at level info skipped, no failures.
 
 ### 9.1 Sets
 
@@ -1316,11 +1316,11 @@ A rotation other than −28.2° (`abRotateDeg`) and the surround parameter give 
 
 ### A.1 Environment
 
-The vectors of Section 9 were produced on 2026-11-09 with:
+The rows of the vectors of Section 9 were produced on 2026-11-09; the file headers were last regenerated on 2026-11-12, with the same rows. Environment:
 
 | | |
 |---|---|
-| Reference code | `src/helmlab` of the helmlab repository, git tree `d62b603e797f745c33bd4fb69f7971bc4a8f3f15`: the files of tag `v1.0.0` (commit `96a0f16`), with the version string "1.0.1" in `__init__.py` |
+| Reference code | `src/helmlab` of the helmlab repository, git tree `0bb705b9571ccdce897dabbec9199930ae0f5a3a`: the files of tag `v1.0.0` (commit `96a0f16`), with the version string "1.0.2" in `__init__.py` and changed docstrings in `helmlab.py` (the same syntax tree once docstrings are removed) |
 | Python | 3.14.7 (Clang 21.0.0) |
 | numpy | 2.4.4, with BLAS and LAPACK from Apple Accelerate |
 | scipy | 1.17.1 |
@@ -1347,10 +1347,10 @@ Both packages are reference code at level R (Section 8). They compute in a diffe
 - Matrix products: BLAS in Python, left-to-right sums in JavaScript. Matrix inverses: `numpy.linalg.inv` (LU decomposition) in Python, Cramer's rule in JavaScript.
 - Elementary functions (`exp`, `pow`, `sin`, `cos`, `atan2`, `sinh`, `asinh`): the platform C library through numpy in Python, the engine's `Math` functions in JavaScript. ECMA-262 does not fix their accuracy.
 - Several expressions are associated differently, and some steps are ordered differently where the order does not matter in exact arithmetic.
-- JavaScript 1.0.1 stops its Newton and Halley loops when an update leaves the value unchanged. This gives the same result as the fixed counts, which JavaScript 1.0.0 runs.
+- JavaScript 1.0.1 and 1.0.2 stop their Newton and Halley loops when an update leaves the value unchanged. This gives the same result as the fixed counts, which JavaScript 1.0.0 runs.
 - The JavaScript neutral-corrected form reads a correction table of 258 entries with values rounded to 12 decimal places (Appendix B.1).
 
-Largest differences between the npm packages and the expected outputs of the vectors (Section 9), per channel, measured with Node.js 26.8.1. The packages 1.0.0 and 1.0.1 give the same maxima.
+Largest differences between the npm packages and the expected outputs of the vectors (Section 9), per channel, measured with Node.js 26.8.1. The packages 1.0.0, 1.0.1 and 1.0.2 give the same maxima.
 
 | Operation | Rows at level U | Rows at level R |
 |---|---|---|
@@ -1503,7 +1503,7 @@ For L ≤ 0 it returns entry 0. For L ≥ 2.59 it returns entry 257. Both table 
 
 ### B.2 Round trip
 
-The neutral-corrected inverse returns greys to a relative 1e-12 only up to Y ≈ 4.3, and to 1e-6 up to Y ≈ 5.1; the base form does so up to Y ≈ 17.4 (Section 5.5.3). On a grid of step 0.01 the first failures are at Y = 4.31 and 5.15 in Python and at 4.28 and 5.17 in JavaScript 1.0.1; in the base form both first fail at 17.4.
+The neutral-corrected inverse returns greys to a relative 1e-12 only up to Y ≈ 4.3, and to 1e-6 up to Y ≈ 5.1; the base form does so up to Y ≈ 17.4 (Section 5.5.3). On a grid of step 0.01 the first failures are at Y = 4.31 and 5.15 in Python and at 4.28 and 5.17 in JavaScript 1.0.1 and 1.0.2; in the base form both first fail at 17.4.
 
 On the vectors, the JavaScript neutral-corrected inverse differs from the expected outputs by up to 1.1e-9 on rows at level U (`rec2020/8-0-8`) and 4.0e-9 on rows at level R (`grey/796`). Level R allows 1e-8 for inverses (Section 8). For the greys from Y ≈ 3.9 to 10.1, a change of 1e-12 in the input moves the neutral-corrected inverse by more than 1e-8, and by up to 1.9. There the JavaScript and Python neutral-corrected inverses differ by up to 0.66 (`grey/573`, Y = 5.25), and the vectors mark these rows `info` (Section 9.4).
 
