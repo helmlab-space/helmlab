@@ -20,17 +20,20 @@
     code governs.
 
 - id: E-2026-0002
-  title: The paper's account of the MetricSpace fitting data is incomplete
+  title: The paper's account of the MetricSpace data is incomplete; one dataset reference is wrong
   class: K2
   status: documented
   outputs_changed: false
   reported: 2026-11-12
   reported_by: maintainer
-  source: the fitting script of MetricSpace v21
+  source: the fitting script of MetricSpace v21; the Crossref and Zenodo records of the He et al. 2022 data
   summary: >-
     The paper (arXiv:2602.23010) says MetricSpace was trained on COMBVD and
     cross-validated on He et al. 2022 and MacAdam 1974, and calls MacAdam 1974
     held-out. The v21 parameters were fitted to a weighted sum of STRESS on
     COMBVD (weight 0.55), MacAdam 1974 (0.15) and the Human Feedback data
-    (0.30), so results on all three are in-sample. spec.md, Section 5.6, lists
-    the fitting data.
+    (0.30), so results on all three are in-sample. The paper's reference for He
+    et al. 2022 names a CIE 2022 paper by He, Cui, Zhu and Luo; the 82 pairs are
+    those of R. He, K. Xiao, M. Pointer, M. Melgosa and Y. Bressler, Materials
+    15(12), 4055 (2022), doi:10.3390/ma15124055, data doi:10.5281/zenodo.6502724.
+    spec.md, Section 5.6, lists the fitting data and the dataset references.

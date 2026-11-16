@@ -9,7 +9,7 @@
 | Status | Draft |
 | Revision | Spec Rev 1 |
 | Date | Set on publication |
-| DOI | Assigned on publication |
+| Location | [helmlab.space/spec/2026](https://helmlab.space/spec/2026/); source: `spec/2026/` at tag `spec-2026-rev1` of [helmlab-space/helmlab](https://github.com/helmlab-space/helmlab/tree/spec-2026-rev1/spec/2026) |
 | Parameter files | `params/gen_params.json` sha256 `310ad1105eeec0aeb72bb8bf24185cda15f62ea8f61822dceca9d61b8a69356f`; `params/metric_params.json` sha256 `a469b93c278e1708ff32aee3308375ea0fccedac75bdeba4d3b85441e279401b` |
 | Reference code | helmlab 1.0.0 on npm and PyPI (2026-07-08), commit `96a0f16`, tag `v1.0.0` |
 | Editor | Görkem Yıldız |
@@ -1275,7 +1275,7 @@ The errata are listed in `errata.yaml`.
 | Identifier | Summary | Class | Status |
 |---|---|---|---|
 | E-2026-0001 | The paper describes the neutral correction (Stage 10) with 384 grey levels for Y from 0.001 to 2.59. The reference code uses 255 levels and holds the correction constant above L ≈ 1.341. The code governs. | K2 | Documented; outputs unchanged |
-| E-2026-0002 | The paper says MetricSpace was trained on COMBVD and cross-validated on He et al. 2022 and MacAdam 1974, and calls MacAdam 1974 held-out. The parameters were fitted to COMBVD, MacAdam 1974 and Helmlab's Human Feedback data (Section 5.6), so results on all three are in-sample. | K2 | Documented; outputs unchanged |
+| E-2026-0002 | The paper says MetricSpace was trained on COMBVD and cross-validated on He et al. 2022 and MacAdam 1974, and calls MacAdam 1974 held-out. The parameters were fitted to COMBVD, MacAdam 1974 and Helmlab's Human Feedback data (Section 5.6), so results on all three are in-sample. Its reference for He et al. 2022 names a CIE 2022 paper by He, Cui, Zhu and Luo; the 82 pairs are those of He, Xiao, Pointer, Melgosa and Bressler, *Materials* 15(12), 4055 (2022) (Section 5.6). | K2 | Documented; outputs unchanged |
 
 ### Change classes
 
@@ -1283,11 +1283,11 @@ The errata are listed in `errata.yaml`.
 |---|---|---|
 | K1 Editorial | Wording, links, layout | Allowed |
 | K2 Explanation | Documents existing behaviour | Allowed, with an erratum |
-| K3 Clarification | Vector outputs unchanged; a conformance status becomes clear, or the reference code changes within the level R tolerance | Allowed after 14 days' notice; new Spec Rev and DOI |
+| K3 Clarification | Vector outputs unchanged; a conformance status becomes clear, or the reference code changes within the level R tolerance | Allowed after 14 days' notice; new Spec Rev |
 | K4 Output change | Any vector output changes beyond tolerance | Not allowed; goes to the next definition |
-| K5 Registration | New vector file, conformance row, reserved identifier, or a single ΔE replacing the previous one | Allowed; new Spec Rev and DOI |
+| K5 Registration | New vector file, conformance row, reserved identifier, or a single ΔE replacing the previous one | Allowed; new Spec Rev |
 
-Classes K1 and K2 need a commit only. A Spec Rev receives at most two rounds of K1 and K2 corrections; later corrections go into a new Spec Rev.
+Classes K1 and K2 need a commit only. A Spec Rev receives at most two rounds of K1 and K2 corrections; later corrections go into a new Spec Rev. Each Spec Rev n is tagged `spec-2026-rev<n>` in the repository when it is published; K1 and K2 corrections come after the tag as commits.
 
 ### Identifier history
 
@@ -1316,7 +1316,7 @@ A rotation other than −28.2° (`abRotateDeg`) and the surround parameter give 
 
 - This document is licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Section 3, the parameter files and the test vectors are dedicated to the public domain under [CC0 1.0](https://creativecommons.org/publicdomain/zero/1.0/). The reference code is under the MIT License.
 - Patents: the editor has not applied for and will not apply for patents on the methods in this document. No employer or institution holds rights in this work.
-- Citation: Görkem Yıldız, *Helmlab 2026*, Spec Rev 1. DOI: assigned on publication. Paper: [arXiv:2602.23010](https://arxiv.org/abs/2602.23010).
+- Citation: Görkem Yıldız, *Helmlab 2026*, Spec Rev 1, https://helmlab.space/spec/2026/ (repository tag `spec-2026-rev1`). Paper: [arXiv:2602.23010](https://arxiv.org/abs/2602.23010).
 - This document contains no performance figures. They will be published on the evidence page of helmlab.space, each with its dataset, its size (n) and whether that data was used to fit, tune or design the model. The link will be added when the page is published (class K1).
 
 ## Appendix A. Reference environment
