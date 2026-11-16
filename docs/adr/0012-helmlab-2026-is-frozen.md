@@ -16,7 +16,7 @@ Color.js and ColorAide implement MetricSpace without the neutral correction. The
 
 ## Decision Outcome
 
-Chosen option: "Make the base form normative and give the neutral-corrected form its own identifier". Helmlab 2026 is the output of helmlab 1.0.0 and never changes. `helmlab-metric` names the base form; the neutral-corrected form is `helmlab-metric-neutral`, described in Appendix B of the specification. New mathematics ships as pre-releases under new identifiers.
+Chosen option: "Make the base form normative and give the neutral-corrected form its own identifier". Helmlab 2026 is the output of helmlab 1.0.0, and later releases give the same outputs; a change within the level R tolerance of the specification is made only as class K3 (specification, Sections 8 and 11). `helmlab-metric` names the base form; the neutral-corrected form is `helmlab-metric-neutral`, described in Appendix B of the specification. New mathematics ships as pre-releases under new identifiers.
 
 ### Consequences
 
@@ -26,3 +26,5 @@ Chosen option: "Make the base form normative and give the neutral-corrected form
 ## More Information
 
 Until 2026-11-12 the reserved identifier was `helmlab-metric-display`. It was renamed in helmlab#4, because color-space uses the suffix `-display` for display-encoded spaces.
+
+Until 2026-11-13 this record said that Helmlab 2026 never changes. It now says what Sections 2 and 11 of the specification allow.

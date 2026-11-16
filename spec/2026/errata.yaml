@@ -1,0 +1,39 @@
+# Errata for Helmlab 2026.
+# Identifiers are permanent. The classes K1-K5 are defined in spec.md, Section 11.
+# Outputs of Helmlab 2026 change only within the level R tolerance, as class K3 (spec.md,
+# Sections 2 and 11); an erratum documents behaviour or corrects text.
+
+- id: E-2026-0001
+  title: The paper's description of the neutral correction (Stage 10) differs from the reference code
+  class: K2
+  status: documented
+  outputs_changed: false
+  reported: 2026-10-19
+  reported_by: dy (GitHub)
+  source: https://github.com/helmlab-space/helmlab/issues/4
+  summary: >-
+    The paper (arXiv:2602.23010) describes the neutral correction with 384 grey
+    levels for Y from 0.001 to 2.59. The reference code uses 255 grey levels and
+    holds the correction constant above L = 1.341; the JavaScript table ends with
+    three extension points at L = 1.351, 1.361 and 2.59. The grey chroma above
+    diffuse white listed in spec.md, Section 10, follows from this. The reference
+    code governs.
+
+- id: E-2026-0002
+  title: The paper's account of the MetricSpace data is incomplete; one dataset reference is wrong
+  class: K2
+  status: documented
+  outputs_changed: false
+  reported: 2026-11-12
+  reported_by: maintainer
+  source: the fitting script of MetricSpace v21; the Crossref and Zenodo records of the He et al. 2022 data
+  summary: >-
+    The paper (arXiv:2602.23010) says MetricSpace was trained on COMBVD and
+    cross-validated on He et al. 2022 and MacAdam 1974, and calls MacAdam 1974
+    held-out. The v21 parameters were fitted to a weighted sum of STRESS on
+    COMBVD (weight 0.55), MacAdam 1974 (0.15) and the Human Feedback data
+    (0.30), so results on all three are in-sample. The paper's reference for He
+    et al. 2022 names a CIE 2022 paper by He, Cui, Zhu and Luo; the 82 pairs are
+    those of R. He, K. Xiao, M. Pointer, M. Melgosa and Y. Bressler, Materials
+    15(12), 4055 (2022), doi:10.3390/ma15124055, data doi:10.5281/zenodo.6502724.
+    spec.md, Section 5.6, lists the fitting data and the dataset references.

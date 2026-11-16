@@ -12,7 +12,7 @@ This README gives no performance figures. They will be published on one evidence
 
 ## Current definition: Helmlab 2026
 
-Helmlab 2026 is defined by the outputs of `helmlab` 1.0.0 on npm and PyPI. Later releases keep these outputs; `helmlab` 1.0.1 has identical outputs, and only its JavaScript speed and documentation changed.
+Helmlab 2026 is defined by the outputs of `helmlab` 1.0.0 on npm and PyPI. `helmlab` 1.0.1 and 1.0.2 give identical outputs; later releases may change them only within the tolerance of the specification.
 
 | Identifier | What it names |
 |---|---|
@@ -22,7 +22,7 @@ Helmlab 2026 is defined by the outputs of `helmlab` 1.0.0 on npm and PyPI. Later
 | ΔE `helmlab` | Color difference computed from `helmlab-metric` coordinates |
 | `helmlab-metric-neutral` | MetricSpace with the neutral correction (reserved) |
 
-A specification and test vectors for Helmlab 2026 are in preparation.
+The specification, with test vectors and conformance levels for other implementations: [Helmlab 2026, Spec Rev 1](https://helmlab.space/spec/2026/) ([source](https://github.com/helmlab-space/helmlab/blob/main/spec/2026/spec.md)).
 
 ### `hl.metric` returns the neutral-corrected form
 

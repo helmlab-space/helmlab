@@ -1,0 +1,352 @@
+{
+ "name": "Helmlab 2026 test vectors",
+ "set": "core",
+ "file": "core-1.json",
+ "spec": "Helmlab 2026, Spec Rev 1",
+ "license": "CC0-1.0",
+ "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",
+ "params_sha256": {
+  "gen_params.json": "310ad1105eeec0aeb72bb8bf24185cda15f62ea8f61822dceca9d61b8a69356f",
+  "metric_params.json": "a469b93c278e1708ff32aee3308375ea0fccedac75bdeba4d3b85441e279401b"
+ },
+ "reference": {
+  "package": "helmlab (Python), loaded from src/helmlab of the repository",
+  "version": "1.0.2",
+  "source_tree": "0bb705b9571ccdce897dabbec9199930ae0f5a3a",
+  "note": "source_tree is the git tree id of src/helmlab. Its files equal tag v1.0.0 (commit 96a0f16) except the version string in __init__.py (\"1.0.2\") and docstrings in src/helmlab/helmlab.py (same syntax tree once docstrings are removed).",
+  "calling_convention": "One reference call with an input of shape (1, 3) per input (spec Appendix A.2); GenSpace(), MetricSpace(), MetricSpace(neutral_correction=True) and Helmlab() are built once and reused.",
+  "calls": {
+   "helmgen.fwd": "GenSpace().from_XYZ(xyz.reshape(1, 3))[0]",
+   "helmgen.inv": "GenSpace().to_XYZ(lab.reshape(1, 3))[0]",
+   "helmgenlch.fwd": "Helmlab().gen.to_lch(lab), lab the helmgen.fwd output (a plain ndarray)",
+   "helmgenlch.inv": "GenSpace().to_XYZ(numpy.asarray(Helmlab().gen.from_lch(lch)).reshape(1, 3))[0]",
+   "helmlab-metric.fwd": "MetricSpace().from_XYZ(xyz.reshape(1, 3))[0]",
+   "helmlab-metric.inv": "MetricSpace().to_XYZ(lab.reshape(1, 3))[0]"
+  }
+ },
+ "environment": {
+  "python": "3.14.7 (main, Aug  5 2026, 10:29:49) [Clang 21.0.0 (clang-2100.1.1.101)]",
+  "numpy": "2.4.4",
+  "numpy_blas": {
+   "name": "accelerate",
+   "found": true,
+   "version": "unknown",
+   "detection method": "system",
+   "include directory": "unknown",
+   "lib directory": "unknown",
+   "openblas configuration": "unknown",
+   "pc file directory": "unknown"
+  },
+  "numpy_lapack": {
+   "name": "accelerate",
+   "found": true,
+   "version": "unknown",
+   "detection method": "system",
+   "include directory": "unknown",
+   "lib directory": "unknown",
+   "openblas configuration": "unknown",
+   "pc file directory": "unknown"
+  },
+  "numpy_simd": {
+   "baseline": [
+    "NEON",
+    "NEON_FP16",
+    "NEON_VFPV4",
+    "ASIMD"
+   ],
+   "found": [
+    "ASIMDHP",
+    "ASIMDDP"
+   ],
+   "not found": [
+    "ASIMDFHM"
+   ]
+  },
+  "scipy": "1.17.1",
+  "platform": "macOS-26.6.2-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "mac_ver": [
+   "26.6.2",
+   [
+    "",
+    "",
+    ""
+   ],
+   "arm64"
+  ]
+ },
+ "generator": {
+  "path": "tools/spec/make_vectors.py",
+  "sha256": "cc66d3ade036c5dfb74bd1a404180762ffc0af07b4ed3d66f8ad675109add9a6"
+ },
+ "variant": "default: rotation -28.2 degrees, surround S = 0.5",
+ "frames": {
+  "xyz-astm-d65": {
+   "white": [
+    0.95047,
+    1.0,
+    1.08883
+   ],
+   "note": "reference frame; the reference calls take these values"
+  },
+  "xyz-css-d65": {
+   "white": [
+    0.9504559270516717,
+    1.0,
+    1.0890577507598784
+   ],
+   "white_exact": "(3127/3290, 1, 3583/3290)"
+  },
+  "A": [
+   [
+    0.9999570254019493,
+    -2.0718742727340958e-05,
+    4.36173329246224e-05
+   ],
+   [
+    -2.694517763356012e-05,
+    1.000009385946498,
+    1.4900982235455368e-05
+   ],
+   [
+    7.94345929293135e-06,
+    -1.2878245967317602e-05,
+    1.000214063706999
+   ]
+  ],
+  "A_definition": "Bradford adaptation from the astm white to the css white, A = M_BFD^-1 * diag((M_BFD*W_css)_i / (M_BFD*W_astm)_i) * M_BFD with M_BFD = [[0.8951, 0.2664, -0.1614], [-0.7502, 1.7135, 0.0367], [0.0389, -0.0685, 1.0296]] (Lam 1985 as tabulated by Lindbloom), computed in exact rational arithmetic; A*W_astm = W_css exactly; the floats above are A rounded; B = A^-1 (exact) maps xyz-css-d65 to xyz-astm-d65",
+  "rule": "Every xyz-css-d65 value in this file is A times the xyz-astm-d65 binary64 value, computed exactly and rounded once per component, and the expected outputs are computed from the xyz-astm-d65 values only."
+ },
+ "tolerances": {
+  "R": {
+   "forward": 1e-11,
+   "inverse": 1e-08,
+   "deltaE": 1e-11
+  },
+  "U": {
+   "forward": 1e-10,
+   "inverse": 1e-08,
+   "deltaE": 1e-10
+  },
+  "note": "absolute, per channel; forward: the coordinates, inverse: XYZ. Level R: the helmlab packages, XYZ in xyz-astm-d65. Level U: other implementations, XYZ (inputs of forward rows, outputs of inverse rows) in the frame of the implementation, xyz-astm-d65 or xyz-css-d65",
+  "lch": "L and C as coordinates; hue as the chord C*|dh|, dh in radians wrapped to [-pi, pi], C the expected chroma, with the tolerance of C"
+ },
+ "domain_rules": "helmgen and helmgenlch: in if 0 <= Y <= 10 and every component of M1*XYZ is >= 0 (M1 of params/gen_params.json, sign decided in exact rational arithmetic); helmlab-metric and helmlab-metric-neutral: in if the colour lies in the Display P3 or the Rec.2020 gamut, that is every component of (B*M)^-1 * XYZ is in [-1e-6, 1 + 1e-6] for M = lin_P3_to_XYZ or M = lin_2020_to_XYZ of CSS Color 4 (B of frames, exact rational arithmetic; the slack admits rounding, such as the sRGB white of spec Section 5.2, Y = 1.0000000102999; every sRGB colour of Section 5.2 lies in the Rec.2020 gamut, and some lie up to 1.1e-5 outside the Display P3 gamut); deltaE: in if both colours are in the MetricSpace domain; an inverse row has the flag of the forward row with the same id; XYZ and Y are the xyz-astm-d65 values; otherwise out.",
+ "level_rules": "A row in the domain has level U and is checked for every implementation (helmlab packages at level R, other implementations at level U); a row out of the domain has level R and is checked only for the helmlab packages, except level info (checked by no level) when (a) an output is not finite, (b) the one-row result and a batch result (one call with all inputs of the file for that op, shape (N, 3)) differ by more than the level R tolerance, (c) for an inverse row, the one-row forward of the expected XYZ differs from the row's input by more than 1e-8 (helmgenlch: L, C and the chord C*|dh|), or (d) for an inverse row, adding or subtracting 1e-12 to one channel of the input moves the output by more than 1e-8 (one batch call over the six changed inputs of each row).",
+ "groups": {
+  "core": {
+   "count": 21,
+   "inputs": {
+    "core/black": "grey, Y = 0.0",
+    "core/white": "grey, Y = 1.0",
+    "core/grey-0.18": "grey, Y = 0.18",
+    "core/grey-0.5": "grey, Y = 0.5",
+    "core/srgb-red": "encoded sRGB [1.0, 0.0, 0.0]",
+    "core/srgb-green": "encoded sRGB [0.0, 1.0, 0.0]",
+    "core/srgb-blue": "encoded sRGB [0.0, 0.0, 1.0]",
+    "core/srgb-cyan": "encoded sRGB [0.0, 1.0, 1.0]",
+    "core/srgb-magenta": "encoded sRGB [1.0, 0.0, 1.0]",
+    "core/srgb-yellow": "encoded sRGB [1.0, 1.0, 0.0]",
+    "core/p3-red": "encoded Display P3 [1.0, 0.0, 0.0]",
+    "core/p3-green": "encoded Display P3 [0.0, 1.0, 0.0]",
+    "core/p3-blue": "encoded Display P3 [0.0, 0.0, 1.0]",
+    "core/rec2020-red": "encoded Rec.2020 [1.0, 0.0, 0.0]",
+    "core/rec2020-green": "encoded Rec.2020 [0.0, 1.0, 0.0]",
+    "core/rec2020-blue": "encoded Rec.2020 [0.0, 0.0, 1.0]",
+    "core/negative-xyz": "XYZ (-0.05, -0.05, -0.05), spec Section 5.3.5",
+    "core/negative-lms": "the input of neg-lms/0 of edge-1",
+    "core/grey-2": "grey, Y = 2.0",
+    "core/grey-10": "grey, Y = 10.0",
+    "core/srgb-red-x2": "2 times the XYZ of core/srgb-red (exact doubling)"
+   },
+   "conversions": {
+    "grey": "XYZ = (Y*0.95047, Y, Y*1.08883) in binary64 arithmetic",
+    "srgb": "XYZ by spec Section 5.2: helmlab.utils.srgb_convert.sRGB_to_XYZ(numpy.array([[r, g, b]]))[0], one-row call",
+    "display-p3": "XYZ by CSS Color 4 conversions.js (Editor's Draft, https://drafts.csswg.org/css-color-4/conversions.js, downloaded 2026-11-09): lin_sRGB of each channel with 50-digit decimal arithmetic, taken as an exact fraction, then the matrix lin_P3_to_XYZ and B (css to astm, see frames) in exact rational arithmetic, rounded once per component",
+    "rec2020": "XYZ by CSS Color 4 conversions.js (Editor's Draft, https://drafts.csswg.org/css-color-4/conversions.js, downloaded 2026-11-09): lin_2020 (sign(v)*|v|**2.4, BT.1886 with b = 0) of each channel with 50-digit decimal arithmetic, taken as an exact fraction, then the matrix lin_2020_to_XYZ and B (css to astm, see frames) in exact rational arithmetic, rounded once per component"
+   }
+  }
+ },
+ "excluded": [],
+ "counts": {
+  "helmgen.fwd": {
+   "U": {
+    "in": 19
+   },
+   "R": {
+    "out": 2
+   }
+  },
+  "helmgen.inv": {
+   "U": {
+    "in": 19
+   },
+   "R": {
+    "out": 2
+   }
+  },
+  "helmgenlch.fwd": {
+   "U": {
+    "in": 19
+   },
+   "R": {
+    "out": 2
+   }
+  },
+  "helmgenlch.inv": {
+   "U": {
+    "in": 19
+   },
+   "R": {
+    "out": 2
+   }
+  },
+  "helmlab-metric.fwd": {
+   "U": {
+    "in": 16
+   },
+   "R": {
+    "out": 5
+   }
+  },
+  "helmlab-metric.inv": {
+   "U": {
+    "in": 16
+   },
+   "R": {
+    "out": 4
+   },
+   "info": {
+    "out": 1
+   }
+  },
+  "total": 126
+ },
+ "rows": [
+{"id":"core/black","op":"helmgen.fwd","src":{"grey":0.0},"in":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"out":[0.0,0.0,0.0],"domain":"in","level":"U"},
+{"id":"core/black","op":"helmgen.inv","in":[0.0,0.0,0.0],"out":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"domain":"in","level":"U"},
+{"id":"core/black","op":"helmgenlch.fwd","src":{"grey":0.0},"in":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"out":[0.0,0.0,0.0],"domain":"in","level":"U"},
+{"id":"core/black","op":"helmgenlch.inv","in":[0.0,0.0,0.0],"out":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"domain":"in","level":"U"},
+{"id":"core/black","op":"helmlab-metric.fwd","src":{"grey":0.0},"in":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"out":[0.0,0.0,0.0],"domain":"in","level":"U"},
+{"id":"core/black","op":"helmlab-metric.inv","in":[0.0,0.0,0.0],"out":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"domain":"in","level":"U"},
+{"id":"core/white","op":"helmgen.fwd","src":{"grey":1.0},"in":{"xyz-astm-d65":[0.95047,1.0,1.08883],"xyz-css-d65":[0.9504559270516718,1.0,1.0890577507598784]},"out":[0.9999999999999998,2.37205375058874e-16,-4.74410750117748e-16],"domain":"in","level":"U"},
+{"id":"core/white","op":"helmgen.inv","in":[0.9999999999999998,2.37205375058874e-16,-4.74410750117748e-16],"out":{"xyz-astm-d65":[0.9504700000000004,1.0000000000000004,1.08883],"xyz-css-d65":[0.9504559270516721,1.0000000000000004,1.0890577507598784]},"domain":"in","level":"U"},
+{"id":"core/white","op":"helmgenlch.fwd","src":{"grey":1.0},"in":{"xyz-astm-d65":[0.95047,1.0,1.08883],"xyz-css-d65":[0.9504559270516718,1.0,1.0890577507598784]},"out":[0.9999999999999998,5.304073432599754e-16,296.565051177078],"domain":"in","level":"U"},
+{"id":"core/white","op":"helmgenlch.inv","in":[0.9999999999999998,5.304073432599754e-16,296.565051177078],"out":{"xyz-astm-d65":[0.9504700000000004,1.0000000000000004,1.08883],"xyz-css-d65":[0.9504559270516721,1.0000000000000004,1.0890577507598784]},"domain":"in","level":"U"},
+{"id":"core/white","op":"helmlab-metric.fwd","src":{"grey":1.0},"in":{"xyz-astm-d65":[0.95047,1.0,1.08883],"xyz-css-d65":[0.9504559270516718,1.0,1.0890577507598784]},"out":[1.1211492319729706,0.10163688399210657,0.20041318295782515],"domain":"in","level":"U"},
+{"id":"core/white","op":"helmlab-metric.inv","in":[1.1211492319729706,0.10163688399210657,0.20041318295782515],"out":{"xyz-astm-d65":[0.9504699999999997,0.9999999999999996,1.0888299999999993],"xyz-css-d65":[0.9504559270516715,0.9999999999999996,1.0890577507598778]},"domain":"in","level":"U"},
+{"id":"core/grey-0.18","op":"helmgen.fwd","src":{"grey":0.18},"in":{"xyz-astm-d65":[0.1710846,0.18,0.19598939999999998],"xyz-css-d65":[0.17108206686930091,0.18,0.19603039513677809]},"out":[0.49045285137808425,-5.926275944761233e-16,-4.741020755808986e-16],"domain":"in","level":"U"},
+{"id":"core/grey-0.18","op":"helmgen.inv","in":[0.49045285137808425,-5.926275944761233e-16,-4.741020755808986e-16],"out":{"xyz-astm-d65":[0.17108460000000003,0.18000000000000005,0.19598939999999998],"xyz-css-d65":[0.17108206686930094,0.18000000000000005,0.19603039513677809]},"domain":"in","level":"U"},
+{"id":"core/grey-0.18","op":"helmgenlch.fwd","src":{"grey":0.18},"in":{"xyz-astm-d65":[0.1710846,0.18,0.19598939999999998],"xyz-css-d65":[0.17108206686930091,0.18,0.19603039513677809]},"out":[0.49045285137808425,7.589336227923181e-16,218.65980825409008],"domain":"in","level":"U"},
+{"id":"core/grey-0.18","op":"helmgenlch.inv","in":[0.49045285137808425,7.589336227923181e-16,218.65980825409008],"out":{"xyz-astm-d65":[0.17108460000000003,0.18000000000000005,0.19598939999999998],"xyz-css-d65":[0.17108206686930094,0.18000000000000005,0.19603039513677809]},"domain":"in","level":"U"},
+{"id":"core/grey-0.18","op":"helmlab-metric.fwd","src":{"grey":0.18},"in":{"xyz-astm-d65":[0.1710846,0.18,0.19598939999999998],"xyz-css-d65":[0.17108206686930091,0.18,0.19603039513677809]},"out":[0.7345175951675056,0.24066071488702862,0.15432534279871837],"domain":"in","level":"U"},
+{"id":"core/grey-0.18","op":"helmlab-metric.inv","in":[0.7345175951675056,0.24066071488702862,0.15432534279871837],"out":{"xyz-astm-d65":[0.17108459999999998,0.1799999999999999,0.19598939999999987],"xyz-css-d65":[0.1710820668693009,0.1799999999999999,0.19603039513677797]},"domain":"in","level":"U"},
+{"id":"core/grey-0.5","op":"helmgen.fwd","src":{"grey":0.5},"in":{"xyz-astm-d65":[0.475235,0.5,0.544415],"xyz-css-d65":[0.4752279635258359,0.5,0.5445288753799392]},"out":[0.7590152487023349,0.0,-9.47567870624053e-16],"domain":"in","level":"U"},
+{"id":"core/grey-0.5","op":"helmgen.inv","in":[0.7590152487023349,0.0,-9.47567870624053e-16],"out":{"xyz-astm-d65":[0.47523500000000063,0.5000000000000008,0.5444150000000005],"xyz-css-d65":[0.4752279635258365,0.5000000000000008,0.5445288753799398]},"domain":"in","level":"U"},
+{"id":"core/grey-0.5","op":"helmgenlch.fwd","src":{"grey":0.5},"in":{"xyz-astm-d65":[0.475235,0.5,0.544415],"xyz-css-d65":[0.4752279635258359,0.5,0.5445288753799392]},"out":[0.7590152487023349,9.47567870624053e-16,270.0],"domain":"in","level":"U"},
+{"id":"core/grey-0.5","op":"helmgenlch.inv","in":[0.7590152487023349,9.47567870624053e-16,270.0],"out":{"xyz-astm-d65":[0.47523500000000063,0.5000000000000008,0.5444150000000005],"xyz-css-d65":[0.4752279635258365,0.5000000000000008,0.5445288753799398]},"domain":"in","level":"U"},
+{"id":"core/grey-0.5","op":"helmlab-metric.fwd","src":{"grey":0.5},"in":{"xyz-astm-d65":[0.475235,0.5,0.544415],"xyz-css-d65":[0.4752279635258359,0.5,0.5445288753799392]},"out":[0.9748991198615568,0.17398430780100327,0.20596578731385257],"domain":"in","level":"U"},
+{"id":"core/grey-0.5","op":"helmlab-metric.inv","in":[0.9748991198615568,0.17398430780100327,0.20596578731385257],"out":{"xyz-astm-d65":[0.47523500000000074,0.5000000000000008,0.5444150000000008],"xyz-css-d65":[0.4752279635258366,0.5000000000000008,0.54452887537994]},"domain":"in","level":"U"},
+{"id":"core/srgb-red","op":"helmgen.fwd","src":{"srgb":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.4124564390896922,0.2126728514056226,0.0193338955823293],"xyz-css-d65":[0.4124351509188759,0.21266402192364467,0.019338571745331427]},"out":[0.5632406520932904,0.29471787551351664,0.18550836212223776],"domain":"in","level":"U"},
+{"id":"core/srgb-red","op":"helmgen.inv","in":[0.5632406520932904,0.29471787551351664,0.18550836212223776],"out":{"xyz-astm-d65":[0.4124564390896921,0.21267285140562275,0.01933389558232937],"xyz-css-d65":[0.4124351509188758,0.21266402192364484,0.019338571745331497]},"domain":"in","level":"U"},
+{"id":"core/srgb-red","op":"helmgenlch.fwd","src":{"srgb":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.4124564390896922,0.2126728514056226,0.0193338955823293],"xyz-css-d65":[0.4124351509188759,0.21266402192364467,0.019338571745331427]},"out":[0.5632406520932904,0.3482412648789284,32.1881118421397],"domain":"in","level":"U"},
+{"id":"core/srgb-red","op":"helmgenlch.inv","in":[0.5632406520932904,0.3482412648789284,32.1881118421397],"out":{"xyz-astm-d65":[0.4124564390896921,0.21267285140562275,0.01933389558232937],"xyz-css-d65":[0.4124351509188758,0.21266402192364484,0.019338571745331497]},"domain":"in","level":"U"},
+{"id":"core/srgb-red","op":"helmlab-metric.fwd","src":{"srgb":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.4124564390896922,0.2126728514056226,0.0193338955823293],"xyz-css-d65":[0.4124351509188759,0.21266402192364467,0.019338571745331427]},"out":[0.9207283173164369,0.940821340214519,-0.20629901228900596],"domain":"in","level":"U"},
+{"id":"core/srgb-red","op":"helmlab-metric.inv","in":[0.9207283173164369,0.940821340214519,-0.20629901228900596],"out":{"xyz-astm-d65":[0.41245643908969204,0.21267285140562253,0.0193338955823293],"xyz-css-d65":[0.4124351509188757,0.2126640219236446,0.019338571745331427]},"domain":"in","level":"U"},
+{"id":"core/srgb-green","op":"helmgen.fwd","src":{"srgb":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.3575760776439511,0.7151521552878178,0.1191920258813418],"xyz-css-d65":[0.35755109274050034,0.7151510087950159,0.1192111710539037]},"out":[0.8463899596030668,-0.29349611360629385,0.3038041098305225],"domain":"in","level":"U"},
+{"id":"core/srgb-green","op":"helmgen.inv","in":[0.8463899596030668,-0.29349611360629385,0.3038041098305225],"out":{"xyz-astm-d65":[0.3575760776439513,0.7151521552878185,0.11919202588134159],"xyz-css-d65":[0.3575510927405005,0.7151510087950166,0.1192111710539035]},"domain":"in","level":"U"},
+{"id":"core/srgb-green","op":"helmgenlch.fwd","src":{"srgb":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.3575760776439511,0.7151521552878178,0.1191920258813418],"xyz-css-d65":[0.35755109274050034,0.7151510087950159,0.1192111710539037]},"out":[0.8463899596030668,0.42241792794803906,134.0113078253793],"domain":"in","level":"U"},
+{"id":"core/srgb-green","op":"helmgenlch.inv","in":[0.8463899596030668,0.42241792794803906,134.0113078253793],"out":{"xyz-astm-d65":[0.3575760776439515,0.7151521552878185,0.11919202588134159],"xyz-css-d65":[0.35755109274050073,0.7151510087950166,0.1192111710539035]},"domain":"in","level":"U"},
+{"id":"core/srgb-green","op":"helmlab-metric.fwd","src":{"srgb":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.3575760776439511,0.7151521552878178,0.1191920258813418],"xyz-css-d65":[0.35755109274050034,0.7151510087950159,0.1192111710539037]},"out":[0.7405747931790364,-0.1547720191626349,0.8916585175791307],"domain":"in","level":"U"},
+{"id":"core/srgb-green","op":"helmlab-metric.inv","in":[0.7405747931790364,-0.1547720191626349,0.8916585175791307],"out":{"xyz-astm-d65":[0.357576077643951,0.715152155287818,0.11919202588134192],"xyz-css-d65":[0.35755109274050023,0.715151008795016,0.11921117105390383]},"domain":"in","level":"U"},
+{"id":"core/srgb-blue","op":"helmgen.fwd","src":{"srgb":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.1804374832663989,0.0721750036064596,0.9503040785363679],"xyz-css-d65":[0.18046968339212435,0.07218497958133613,0.9505080079605497]},"out":[0.3648928088510713,-0.04191420507221431,-0.493523357523643],"domain":"in","level":"U"},
+{"id":"core/srgb-blue","op":"helmgen.inv","in":[0.3648928088510713,-0.04191420507221431,-0.493523357523643],"out":{"xyz-astm-d65":[0.18043748326639902,0.07217500360645977,0.9503040785363681],"xyz-css-d65":[0.18046968339212446,0.0721849795813363,0.9505080079605499]},"domain":"in","level":"U"},
+{"id":"core/srgb-blue","op":"helmgenlch.fwd","src":{"srgb":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.1804374832663989,0.0721750036064596,0.9503040785363679],"xyz-css-d65":[0.18046968339212435,0.07218497958133613,0.9505080079605497]},"out":[0.3648928088510713,0.4953000151506612,265.14560360670447],"domain":"in","level":"U"},
+{"id":"core/srgb-blue","op":"helmgenlch.inv","in":[0.3648928088510713,0.4953000151506612,265.14560360670447],"out":{"xyz-astm-d65":[0.18043748326639908,0.07217500360645974,0.9503040785363681],"xyz-css-d65":[0.18046968339212452,0.07218497958133627,0.9505080079605499]},"domain":"in","level":"U"},
+{"id":"core/srgb-blue","op":"helmlab-metric.fwd","src":{"srgb":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.1804374832663989,0.0721750036064596,0.9503040785363679],"xyz-css-d65":[0.18046968339212435,0.07218497958133613,0.9505080079605497]},"out":[0.7623162469855196,-0.12541914692709508,-0.20263496227418212],"domain":"in","level":"U"},
+{"id":"core/srgb-blue","op":"helmlab-metric.inv","in":[0.7623162469855196,-0.12541914692709508,-0.20263496227418212],"out":{"xyz-astm-d65":[0.18043748326639927,0.0721750036064598,0.9503040785363696],"xyz-css-d65":[0.1804696833921247,0.07218497958133632,0.9505080079605513]},"domain":"in","level":"U"},
+{"id":"core/srgb-cyan","op":"helmgen.fwd","src":{"srgb":[0.0,1.0,1.0]},"in":{"xyz-astm-d65":[0.53801356091035,0.7873271588942774,1.0694961044177096],"xyz-css-d65":[0.5380207761326247,0.787335988376352,1.0697191790144533]},"out":[0.8941173762514437,-0.19477396023688262,-0.05192276675649077],"domain":"in","level":"U"},
+{"id":"core/srgb-cyan","op":"helmgen.inv","in":[0.8941173762514437,-0.19477396023688262,-0.05192276675649077],"out":{"xyz-astm-d65":[0.5380135609103509,0.7873271588942785,1.0694961044177105],"xyz-css-d65":[0.5380207761326256,0.7873359883763531,1.0697191790144542]},"domain":"in","level":"U"},
+{"id":"core/srgb-cyan","op":"helmgenlch.fwd","src":{"srgb":[0.0,1.0,1.0]},"in":{"xyz-astm-d65":[0.53801356091035,0.7873271588942774,1.0694961044177096],"xyz-css-d65":[0.5380207761326247,0.787335988376352,1.0697191790144533]},"out":[0.8941173762514437,0.20157596407808068,194.926760359223],"domain":"in","level":"U"},
+{"id":"core/srgb-cyan","op":"helmgenlch.inv","in":[0.8941173762514437,0.20157596407808068,194.926760359223],"out":{"xyz-astm-d65":[0.5380135609103508,0.7873271588942785,1.06949610441771],"xyz-css-d65":[0.5380207761326254,0.7873359883763531,1.0697191790144538]},"domain":"in","level":"U"},
+{"id":"core/srgb-cyan","op":"helmlab-metric.fwd","src":{"srgb":[0.0,1.0,1.0]},"in":{"xyz-astm-d65":[0.53801356091035,0.7873271588942774,1.0694961044177096],"xyz-css-d65":[0.5380207761326247,0.787335988376352,1.0697191790144533]},"out":[0.8824553686532568,-0.16707583683924032,0.22456411141685242],"domain":"in","level":"U"},
+{"id":"core/srgb-cyan","op":"helmlab-metric.inv","in":[0.8824553686532568,-0.16707583683924032,0.22456411141685242],"out":{"xyz-astm-d65":[0.5380135609103516,0.787327158894279,1.069496104417712],"xyz-css-d65":[0.5380207761326262,0.7873359883763535,1.0697191790144558]},"domain":"in","level":"U"},
+{"id":"core/srgb-magenta","op":"helmgen.fwd","src":{"srgb":[1.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.5928939223560912,0.2848478550120822,0.9696379741186972],"xyz-css-d65":[0.5929048343110003,0.2848490015049808,0.9698465797058811]},"out":[0.6504478096511678,0.3527805572152495,-0.2825638949117671],"domain":"in","level":"U"},
+{"id":"core/srgb-magenta","op":"helmgen.inv","in":[0.6504478096511678,0.3527805572152495,-0.2825638949117671],"out":{"xyz-astm-d65":[0.5928939223560916,0.28484785501208276,0.9696379741186971],"xyz-css-d65":[0.5929048343110007,0.2848490015049814,0.969846579705881]},"domain":"in","level":"U"},
+{"id":"core/srgb-magenta","op":"helmgenlch.fwd","src":{"srgb":[1.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.5928939223560912,0.2848478550120822,0.9696379741186972],"xyz-css-d65":[0.5929048343110003,0.2848490015049808,0.9698465797058811]},"out":[0.6504478096511678,0.4519916771986074,321.306591302587],"domain":"in","level":"U"},
+{"id":"core/srgb-magenta","op":"helmgenlch.inv","in":[0.6504478096511678,0.4519916771986074,321.306591302587],"out":{"xyz-astm-d65":[0.5928939223560915,0.2848478550120827,0.9696379741186982],"xyz-css-d65":[0.5929048343110006,0.2848490015049813,0.9698465797058821]},"domain":"in","level":"U"},
+{"id":"core/srgb-magenta","op":"helmlab-metric.fwd","src":{"srgb":[1.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.5928939223560912,0.2848478550120822,0.9696379741186972],"xyz-css-d65":[0.5929048343110003,0.2848490015049808,0.9698465797058811]},"out":[1.3271843182860856,0.094577409508457,-0.07810562793919387],"domain":"in","level":"U"},
+{"id":"core/srgb-magenta","op":"helmlab-metric.inv","in":[1.3271843182860856,0.094577409508457,-0.07810562793919387],"out":{"xyz-astm-d65":[0.5928939223560913,0.2848478550120822,0.9696379741186971],"xyz-css-d65":[0.5929048343110004,0.2848490015049808,0.969846579705881]},"domain":"in","level":"U"},
+{"id":"core/srgb-yellow","op":"helmgen.fwd","src":{"srgb":[1.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.7700325167336433,0.9278250066934404,0.1385259214636711],"xyz-css-d65":[0.7699862436593762,0.9278150307186606,0.13854974279923513]},"out":[0.964838232885624,-0.08491388059686626,0.32222641194591867],"domain":"in","level":"U"},
+{"id":"core/srgb-yellow","op":"helmgen.inv","in":[0.964838232885624,-0.08491388059686626,0.32222641194591867],"out":{"xyz-astm-d65":[0.7700325167336439,0.927825006693441,0.13852592146367204],"xyz-css-d65":[0.7699862436593768,0.9278150307186612,0.13854974279923607]},"domain":"in","level":"U"},
+{"id":"core/srgb-yellow","op":"helmgenlch.fwd","src":{"srgb":[1.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.7700325167336433,0.9278250066934404,0.1385259214636711],"xyz-css-d65":[0.7699862436593762,0.9278150307186606,0.13854974279923513]},"out":[0.964838232885624,0.33322699121403676,104.76309359477008],"domain":"in","level":"U"},
+{"id":"core/srgb-yellow","op":"helmgenlch.inv","in":[0.964838232885624,0.33322699121403676,104.76309359477008],"out":{"xyz-astm-d65":[0.7700325167336439,0.927825006693441,0.13852592146367204],"xyz-css-d65":[0.7699862436593768,0.9278150307186612,0.13854974279923607]},"domain":"in","level":"U"},
+{"id":"core/srgb-yellow","op":"helmlab-metric.fwd","src":{"srgb":[1.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.7700325167336433,0.9278250066934404,0.1385259214636711],"xyz-css-d65":[0.7699862436593762,0.9278150307186606,0.13854974279923513]},"out":[0.8997792183191262,0.17785131197169998,0.8759352384154622],"domain":"in","level":"U"},
+{"id":"core/srgb-yellow","op":"helmlab-metric.inv","in":[0.8997792183191262,0.17785131197169998,0.8759352384154622],"out":{"xyz-astm-d65":[0.7700325167336434,0.9278250066934403,0.13852592146367088],"xyz-css-d65":[0.7699862436593763,0.9278150307186604,0.1385497427992349]},"domain":"in","level":"U"},
+{"id":"core/p3-red","op":"helmgen.fwd","src":{"display-p3":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.4865966042738641,0.2289855262694398,-9.161322772031926e-07],"xyz-css-d65":[0.48657094864821626,0.22897456406974884,-1.655677627425254e-22]},"out":[0.5866938520827683,0.34191892390080963,0.21278811951194584],"domain":"in","level":"U"},
+{"id":"core/p3-red","op":"helmgen.inv","in":[0.5866938520827683,0.34191892390080963,0.21278811951194584],"out":{"xyz-astm-d65":[0.486596604273864,0.2289855262694399,-9.161322771511493e-07],"xyz-css-d65":[0.48657094864821615,0.22897456406974895,5.2051955804768096e-17]},"domain":"in","level":"U"},
+{"id":"core/p3-red","op":"helmgenlch.fwd","src":{"display-p3":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.4865966042738641,0.2289855262694398,-9.161322772031926e-07],"xyz-css-d65":[0.48657094864821626,0.22897456406974884,-1.655677627425254e-22]},"out":[0.5866938520827683,0.4027248866495809,31.895450505863188],"domain":"in","level":"U"},
+{"id":"core/p3-red","op":"helmgenlch.inv","in":[0.5866938520827683,0.4027248866495809,31.895450505863188],"out":{"xyz-astm-d65":[0.486596604273864,0.2289855262694399,-9.161322771511493e-07],"xyz-css-d65":[0.48657094864821615,0.22897456406974895,5.2051955804768096e-17]},"domain":"in","level":"U"},
+{"id":"core/p3-red","op":"helmlab-metric.fwd","src":{"display-p3":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.4865966042738641,0.2289855262694398,-9.161322772031926e-07],"xyz-css-d65":[0.48657094864821626,0.22897456406974884,-1.655677627425254e-22]},"out":[0.9724467568425391,0.9573782826272872,-0.2681782928893235],"domain":"in","level":"U"},
+{"id":"core/p3-red","op":"helmlab-metric.inv","in":[0.9724467568425391,0.9573782826272872,-0.2681782928893235],"out":{"xyz-astm-d65":[0.48659660427386386,0.2289855262694397,-9.161322771580882e-07],"xyz-css-d65":[0.48657094864821604,0.22897456406974873,4.511355417940705e-17]},"domain":"in","level":"U"},
+{"id":"core/p3-green","op":"helmgen.fwd","src":{"display-p3":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.26569147550509964,0.6917385161287015,0.045110523202416826],"xyz-css-d65":[0.26566769316909294,0.6917385218365061,0.045113381858902575]},"out":[0.8249345452959719,-0.38109903363728953,0.3533615789478416],"domain":"in","level":"U"},
+{"id":"core/p3-green","op":"helmgen.inv","in":[0.8249345452959719,-0.38109903363728953,0.3533615789478416],"out":{"xyz-astm-d65":[0.26569147550509997,0.6917385161287019,0.04511052320241715],"xyz-css-d65":[0.2656676931690933,0.6917385218365064,0.0451133818589029]},"domain":"in","level":"U"},
+{"id":"core/p3-green","op":"helmgenlch.fwd","src":{"display-p3":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.26569147550509964,0.6917385161287015,0.045110523202416826],"xyz-css-d65":[0.26566769316909294,0.6917385218365061,0.045113381858902575]},"out":[0.8249345452959719,0.5197123039872998,137.16279015532035],"domain":"in","level":"U"},
+{"id":"core/p3-green","op":"helmgenlch.inv","in":[0.8249345452959719,0.5197123039872998,137.16279015532035],"out":{"xyz-astm-d65":[0.26569147550509997,0.6917385161287019,0.04511052320241715],"xyz-css-d65":[0.2656676931690933,0.6917385218365064,0.0451133818589029]},"domain":"in","level":"U"},
+{"id":"core/p3-green","op":"helmlab-metric.fwd","src":{"display-p3":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.26569147550509964,0.6917385161287015,0.045110523202416826],"xyz-css-d65":[0.26566769316909294,0.6917385218365061,0.045113381858902575]},"out":[0.7051298217148839,-0.2387196582426005,1.014335461008113],"domain":"in","level":"U"},
+{"id":"core/p3-green","op":"helmlab-metric.inv","in":[0.7051298217148839,-0.2387196582426005,1.014335461008113],"out":{"xyz-astm-d65":[0.26569147550509997,0.6917385161287019,0.045110523202416736],"xyz-css-d65":[0.2656676931690933,0.6917385218365064,0.045113381858902485]},"domain":"in","level":"U"},
+{"id":"core/p3-blue","op":"helmgen.fwd","src":{"display-p3":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.19818192022103628,0.07927595760185867,1.0437203929298604],"xyz-css-d65":[0.1982172852343625,0.07928691409374501,1.043944368900976]},"out":[0.3810098099292466,-0.04275154280044526,-0.5083473623628557],"domain":"in","level":"U"},
+{"id":"core/p3-blue","op":"helmgen.inv","in":[0.3810098099292466,-0.04275154280044526,-0.5083473623628557],"out":{"xyz-astm-d65":[0.19818192022103645,0.07927595760185883,1.0437203929298615],"xyz-css-d65":[0.19821728523436266,0.07928691409374518,1.043944368900977]},"domain":"in","level":"U"},
+{"id":"core/p3-blue","op":"helmgenlch.fwd","src":{"display-p3":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.19818192022103628,0.07927595760185867,1.0437203929298604],"xyz-css-d65":[0.1982172852343625,0.07928691409374501,1.043944368900976]},"out":[0.3810098099292466,0.5101418775527949,265.1927899077939],"domain":"in","level":"U"},
+{"id":"core/p3-blue","op":"helmgenlch.inv","in":[0.3810098099292466,0.5101418775527949,265.1927899077939],"out":{"xyz-astm-d65":[0.19818192022103645,0.07927595760185883,1.0437203929298615],"xyz-css-d65":[0.19821728523436266,0.07928691409374518,1.043944368900977]},"domain":"in","level":"U"},
+{"id":"core/p3-blue","op":"helmlab-metric.fwd","src":{"display-p3":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.19818192022103628,0.07927595760185867,1.0437203929298604],"xyz-css-d65":[0.1982172852343625,0.07928691409374501,1.043944368900976]},"out":[0.7804592198309552,-0.12013298407705753,-0.19447008743651217],"domain":"in","level":"U"},
+{"id":"core/p3-blue","op":"helmlab-metric.inv","in":[0.7804592198309552,-0.12013298407705753,-0.19447008743651217],"out":{"xyz-astm-d65":[0.19818192022103645,0.07927595760185877,1.0437203929298609],"xyz-css-d65":[0.19821728523436266,0.07928691409374511,1.0439443689009764]},"domain":"in","level":"U"},
+{"id":"core/rec2020-red","op":"helmgen.fwd","src":{"rec2020":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.6369908659234614,0.26271491004018815,-1.6762449594429903e-06],"xyz-css-d65":[0.6369580483012913,0.26270021201126703,1.1364859844190495e-22]},"out":[0.6323106732269393,0.43067666146862993,0.21295441502749626],"domain":"in","level":"U"},
+{"id":"core/rec2020-red","op":"helmgen.inv","in":[0.6323106732269393,0.43067666146862993,0.21295441502749626],"out":{"xyz-astm-d65":[0.636990865923461,0.2627149100401885,-1.6762449593366036e-06],"xyz-css-d65":[0.6369580483012909,0.26270021201126736,1.064017731589086e-16]},"domain":"in","level":"U"},
+{"id":"core/rec2020-red","op":"helmgenlch.fwd","src":{"rec2020":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.6369908659234614,0.26271491004018815,-1.6762449594429903e-06],"xyz-css-d65":[0.6369580483012913,0.26270021201126703,1.1364859844190495e-22]},"out":[0.6323106732269393,0.4804497576370166,26.310771314542226],"domain":"in","level":"U"},
+{"id":"core/rec2020-red","op":"helmgenlch.inv","in":[0.6323106732269393,0.4804497576370166,26.310771314542226],"out":{"xyz-astm-d65":[0.636990865923461,0.2627149100401885,-1.6762449593366036e-06],"xyz-css-d65":[0.6369580483012909,0.26270021201126736,1.064017731589086e-16]},"domain":"in","level":"U"},
+{"id":"core/rec2020-red","op":"helmlab-metric.fwd","src":{"rec2020":[1.0,0.0,0.0]},"in":{"xyz-astm-d65":[0.6369908659234614,0.26271491004018815,-1.6762449594429903e-06],"xyz-css-d65":[0.6369580483012913,0.26270021201126703,1.1364859844190495e-22]},"out":[1.3779512862778835,0.3755779768463135,-0.1673351936222981],"domain":"in","level":"U"},
+{"id":"core/rec2020-red","op":"helmlab-metric.inv","in":[1.3779512862778835,0.3755779768463135,-0.1673351936222981],"out":{"xyz-astm-d65":[0.6369908659234613,0.2627149100401881,-1.676244959433748e-06],"xyz-css-d65":[0.6369580483012912,0.262700212011267,9.244113296522855e-18]},"domain":"in","level":"U"},
+{"id":"core/rec2020-green","op":"helmgen.fwd","src":{"rec2020":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.14463594194092258,0.677995186799333,0.02807426584673224],"xyz-css-d65":[0.14461690358620838,0.677998071518871,0.028072693049087508]},"out":[0.802024269650607,-0.5212279501830006,0.3725653050469163],"domain":"in","level":"U"},
+{"id":"core/rec2020-green","op":"helmgen.inv","in":[0.802024269650607,-0.5212279501830006,0.3725653050469163],"out":{"xyz-astm-d65":[0.1446359419409226,0.6779951867993337,0.02807426584673217],"xyz-css-d65":[0.1446169035862084,0.6779980715188717,0.028072693049087438]},"domain":"in","level":"U"},
+{"id":"core/rec2020-green","op":"helmgenlch.fwd","src":{"rec2020":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.14463594194092258,0.677995186799333,0.02807426584673224],"xyz-css-d65":[0.14461690358620838,0.677998071518871,0.028072693049087508]},"out":[0.802024269650607,0.6406898489727103,144.4434289986992],"domain":"in","level":"U"},
+{"id":"core/rec2020-green","op":"helmgenlch.inv","in":[0.802024269650607,0.6406898489727103,144.4434289986992],"out":{"xyz-astm-d65":[0.1446359419409226,0.6779951867993337,0.02807426584673217],"xyz-css-d65":[0.1446169035862084,0.6779980715188717,0.028072693049087438]},"domain":"in","level":"U"},
+{"id":"core/rec2020-green","op":"helmlab-metric.fwd","src":{"rec2020":[0.0,1.0,0.0]},"in":{"xyz-astm-d65":[0.14463594194092258,0.677995186799333,0.02807426584673224],"xyz-css-d65":[0.14461690358620838,0.677998071518871,0.028072693049087508]},"out":[0.7208279757639227,-0.3658127972188819,1.0565232250305165],"domain":"in","level":"U"},
+{"id":"core/rec2020-green","op":"helmlab-metric.inv","in":[0.7208279757639227,-0.3658127972188819,1.0565232250305165],"out":{"xyz-astm-d65":[0.14463594194092258,0.6779951867993332,0.028074265846732005],"xyz-css-d65":[0.14461690358620838,0.6779980715188713,0.02807269304908727]},"domain":"in","level":"U"},
+{"id":"core/rec2020-blue","op":"helmgen.fwd","src":{"rec2020":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.168843192135616,0.05928990316047886,1.0607574103982271],"xyz-css-d65":[0.16888097516417205,0.05930171646986195,1.0609850577107909]},"out":[0.3353463190269114,-0.19794776307475045,-0.5384623286966809],"domain":"in","level":"U"},
+{"id":"core/rec2020-blue","op":"helmgen.inv","in":[0.3353463190269114,-0.19794776307475045,-0.5384623286966809],"out":{"xyz-astm-d65":[0.16884319213561622,0.05928990316047904,1.0607574103982282],"xyz-css-d65":[0.16888097516417228,0.05930171646986213,1.060985057710792]},"domain":"in","level":"U"},
+{"id":"core/rec2020-blue","op":"helmgenlch.fwd","src":{"rec2020":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.168843192135616,0.05928990316047886,1.0607574103982271],"xyz-css-d65":[0.16888097516417205,0.05930171646986195,1.0609850577107909]},"out":[0.3353463190269114,0.5736941661998577,249.8157275680711],"domain":"in","level":"U"},
+{"id":"core/rec2020-blue","op":"helmgenlch.inv","in":[0.3353463190269114,0.5736941661998577,249.8157275680711],"out":{"xyz-astm-d65":[0.16884319213561613,0.05928990316047905,1.0607574103982278],"xyz-css-d65":[0.1688809751641722,0.05930171646986215,1.0609850577107915]},"domain":"in","level":"U"},
+{"id":"core/rec2020-blue","op":"helmlab-metric.fwd","src":{"rec2020":[0.0,0.0,1.0]},"in":{"xyz-astm-d65":[0.168843192135616,0.05928990316047886,1.0607574103982271],"xyz-css-d65":[0.16888097516417205,0.05930171646986195,1.0609850577107909]},"out":[0.8122848975865923,-0.1510209859849525,-0.2036955702133576],"domain":"in","level":"U"},
+{"id":"core/rec2020-blue","op":"helmlab-metric.inv","in":[0.8122848975865923,-0.1510209859849525,-0.2036955702133576],"out":{"xyz-astm-d65":[0.16884319213561633,0.059289903160479204,1.0607574103982271],"xyz-css-d65":[0.1688809751641724,0.0593017164698623,1.0609850577107909]},"domain":"in","level":"U"},
+{"id":"core/negative-xyz","op":"helmgen.fwd","in":{"xyz-astm-d65":[-0.05,-0.05,-0.05],"xyz-css-d65":[-0.049998996199607335,-0.049999867087554994,-0.050010456446016226]},"out":[0.0,0.0,0.0],"domain":"out","level":"R"},
+{"id":"core/negative-xyz","op":"helmgen.inv","in":[0.0,0.0,0.0],"out":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"domain":"out","level":"R"},
+{"id":"core/negative-xyz","op":"helmgenlch.fwd","in":{"xyz-astm-d65":[-0.05,-0.05,-0.05],"xyz-css-d65":[-0.049998996199607335,-0.049999867087554994,-0.050010456446016226]},"out":[0.0,0.0,0.0],"domain":"out","level":"R"},
+{"id":"core/negative-xyz","op":"helmgenlch.inv","in":[0.0,0.0,0.0],"out":{"xyz-astm-d65":[0.0,0.0,0.0],"xyz-css-d65":[0.0,0.0,0.0]},"domain":"out","level":"R"},
+{"id":"core/negative-xyz","op":"helmlab-metric.fwd","in":{"xyz-astm-d65":[-0.05,-0.05,-0.05],"xyz-css-d65":[-0.049998996199607335,-0.049999867087554994,-0.050010456446016226]},"out":[-0.3157585330879478,-0.2737183531818679,-0.2011960902300976],"domain":"out","level":"R"},
+{"id":"core/negative-xyz","op":"helmlab-metric.inv","in":[-0.3157585330879478,-0.2737183531818679,-0.2011960902300976],"out":{"xyz-astm-d65":[-0.05,-0.049999999999999996,-0.05000000000000002],"xyz-css-d65":[-0.049998996199607335,-0.04999986708755499,-0.05001045644601624]},"domain":"out","level":"R"},
+{"id":"core/negative-lms","op":"helmgen.fwd","in":{"xyz-astm-d65":[-0.03721012230416233,0.08556165376589255,0.36374929771311004],"xyz-css-d65":[-0.037194430169785145,0.0855688796981757,0.36382576577508235]},"out":[0.26258301699364106,-0.9769899585398601,-0.18714918695925908],"domain":"out","level":"R"},
+{"id":"core/negative-lms","op":"helmgen.inv","in":[0.26258301699364106,-0.9769899585398601,-0.18714918695925908],"out":{"xyz-astm-d65":[0.017934509823448914,0.08373789357866074,0.36031655909185223],"xyz-css-d65":[0.017947720198540594,0.08374356536014292,0.36039275385504294]},"domain":"out","level":"R"},
+{"id":"core/negative-lms","op":"helmgenlch.fwd","in":{"xyz-astm-d65":[-0.03721012230416233,0.08556165376589255,0.36374929771311004],"xyz-css-d65":[-0.037194430169785145,0.0855688796981757,0.36382576577508235]},"out":[0.26258301699364106,0.9947533348862065,190.84403927721468],"domain":"out","level":"R"},
+{"id":"core/negative-lms","op":"helmgenlch.inv","in":[0.26258301699364106,0.9947533348862065,190.84403927721468],"out":{"xyz-astm-d65":[0.017934509823448762,0.08373789357866078,0.36031655909185134],"xyz-css-d65":[0.01794772019854044,0.08374356536014296,0.36039275385504205]},"domain":"out","level":"R"},
+{"id":"core/negative-lms","op":"helmlab-metric.fwd","in":{"xyz-astm-d65":[-0.03721012230416233,0.08556165376589255,0.36374929771311004],"xyz-css-d65":[-0.037194430169785145,0.0855688796981757,0.36382576577508235]},"out":[0.8571434638446472,-0.798980535518446,0.0022195400546781707],"domain":"out","level":"R"},
+{"id":"core/negative-lms","op":"helmlab-metric.inv","in":[0.8571434638446472,-0.798980535518446,0.0022195400546781707],"out":{"xyz-astm-d65":[-0.03721012230416196,0.08556165376589303,0.363749297713111],"xyz-css-d65":[-0.03719443016978477,0.08556887969817618,0.3638257657750833]},"domain":"out","level":"R"},
+{"id":"core/grey-2","op":"helmgen.fwd","src":{"grey":2.0},"in":{"xyz-astm-d65":[1.90094,2.0,2.17766],"xyz-css-d65":[1.9009118541033436,2.0,2.178115501519757]},"out":[1.2632074893724938,-7.086364231091119e-16,-1.4172728462182238e-15],"domain":"in","level":"U"},
+{"id":"core/grey-2","op":"helmgen.inv","in":[1.2632074893724938,-7.086364231091119e-16,-1.4172728462182238e-15],"out":{"xyz-astm-d65":[1.9009400000000032,2.0000000000000036,2.177660000000002],"xyz-css-d65":[1.9009118541033467,2.0000000000000036,2.178115501519759]},"domain":"in","level":"U"},
+{"id":"core/grey-2","op":"helmgenlch.fwd","src":{"grey":2.0},"in":{"xyz-astm-d65":[1.90094,2.0,2.17766],"xyz-css-d65":[1.9009118541033436,2.0,2.178115501519757]},"out":[1.2632074893724938,1.5845592134042772e-15,243.43494882292202],"domain":"in","level":"U"},
+{"id":"core/grey-2","op":"helmgenlch.inv","in":[1.2632074893724938,1.5845592134042772e-15,243.43494882292202],"out":{"xyz-astm-d65":[1.9009400000000032,2.0000000000000036,2.177660000000002],"xyz-css-d65":[1.9009118541033467,2.0000000000000036,2.178115501519759]},"domain":"in","level":"U"},
+{"id":"core/grey-2","op":"helmlab-metric.fwd","src":{"grey":2.0},"in":{"xyz-astm-d65":[1.90094,2.0,2.17766],"xyz-css-d65":[1.9009118541033436,2.0,2.178115501519757]},"out":[1.3414218614893383,0.03337649194059151,0.13456668508162287],"domain":"out","level":"R"},
+{"id":"core/grey-2","op":"helmlab-metric.inv","in":[1.3414218614893383,0.03337649194059151,0.13456668508162287],"out":{"xyz-astm-d65":[1.9009400000000005,2.0,2.1776600000000004],"xyz-css-d65":[1.900911854103344,2.0,2.1781155015197573]},"domain":"out","level":"R"},
+{"id":"core/grey-10","op":"helmgen.fwd","src":{"grey":10.0},"in":{"xyz-astm-d65":[9.5047,10.0,10.8883],"xyz-css-d65":[9.504559270516717,10.0,10.890577507598783]},"out":[2.1663497793510853,-2.808797513891267e-15,-1.8725316759275113e-15],"domain":"in","level":"U"},
+{"id":"core/grey-10","op":"helmgen.inv","in":[2.1663497793510853,-2.808797513891267e-15,-1.8725316759275113e-15],"out":{"xyz-astm-d65":[9.504700000000014,10.000000000000016,10.888300000000012],"xyz-css-d65":[9.504559270516731,10.000000000000016,10.890577507598795]},"domain":"in","level":"U"},
+{"id":"core/grey-10","op":"helmgenlch.fwd","src":{"grey":10.0},"in":{"xyz-astm-d65":[9.5047,10.0,10.8883],"xyz-css-d65":[9.504559270516717,10.0,10.890577507598783]},"out":[2.1663497793510853,3.3757544862435797e-15,213.69006752597977],"domain":"in","level":"U"},
+{"id":"core/grey-10","op":"helmgenlch.inv","in":[2.1663497793510853,3.3757544862435797e-15,213.69006752597977],"out":{"xyz-astm-d65":[9.504700000000014,10.000000000000016,10.888300000000012],"xyz-css-d65":[9.504559270516731,10.000000000000016,10.890577507598795]},"domain":"in","level":"U"},
+{"id":"core/grey-10","op":"helmlab-metric.fwd","src":{"grey":10.0},"in":{"xyz-astm-d65":[9.5047,10.0,10.8883],"xyz-css-d65":[9.504559270516717,10.0,10.890577507598783]},"out":[19.03829669317455,-0.00033810440984451823,0.0019131891231165387],"domain":"out","level":"R"},
+{"id":"core/grey-10","op":"helmlab-metric.inv","in":[19.03829669317455,-0.00033810440984451823,0.0019131891231165387],"out":{"xyz-astm-d65":[9.504699999999994,9.999999999999998,10.888299999999996],"xyz-css-d65":[9.504559270516712,9.999999999999998,10.89057750759878]},"domain":"out","level":"info"},
+{"id":"core/srgb-red-x2","op":"helmgen.fwd","in":{"xyz-astm-d65":[0.8249128781793844,0.4253457028112452,0.0386677911646586],"xyz-css-d65":[0.8248703018377518,0.42532804384728934,0.038677143490662855]},"out":[0.7556349162876022,0.3677325051600349,0.23031571478524612],"domain":"in","level":"U"},
+{"id":"core/srgb-red-x2","op":"helmgen.inv","in":[0.7556349162876022,0.3677325051600349,0.23031571478524612],"out":{"xyz-astm-d65":[0.8249128781793844,0.4253457028112455,0.038667791164658405],"xyz-css-d65":[0.8248703018377518,0.42532804384728967,0.03867714349066266]},"domain":"in","level":"U"},
+{"id":"core/srgb-red-x2","op":"helmgenlch.fwd","in":{"xyz-astm-d65":[0.8249128781793844,0.4253457028112452,0.0386677911646586],"xyz-css-d65":[0.8248703018377518,0.42532804384728934,0.038677143490662855]},"out":[0.7556349162876022,0.4339038186376261,32.0594562209574],"domain":"in","level":"U"},
+{"id":"core/srgb-red-x2","op":"helmgenlch.inv","in":[0.7556349162876022,0.4339038186376261,32.0594562209574],"out":{"xyz-astm-d65":[0.8249128781793844,0.4253457028112455,0.038667791164658405],"xyz-css-d65":[0.8248703018377518,0.42532804384728967,0.03867714349066266]},"domain":"in","level":"U"},
+{"id":"core/srgb-red-x2","op":"helmlab-metric.fwd","in":{"xyz-astm-d65":[0.8249128781793844,0.4253457028112452,0.0386677911646586],"xyz-css-d65":[0.8248703018377518,0.42532804384728934,0.038677143490662855]},"out":[1.1147213954308688,0.8484840459712474,-0.18314532189728533],"domain":"out","level":"R"},
+{"id":"core/srgb-red-x2","op":"helmlab-metric.inv","in":[1.1147213954308688,0.8484840459712474,-0.18314532189728533],"out":{"xyz-astm-d65":[0.8249128781793836,0.42534570281124473,0.03866779116465849],"xyz-css-d65":[0.824870301837751,0.4253280438472889,0.038677143490662744]},"domain":"out","level":"R"}
+]}

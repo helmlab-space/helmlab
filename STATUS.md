@@ -1,19 +1,21 @@
 # Status
 
-Last updated: 2026-11-12.
+Last updated: 2026-11-16.
 
 ## Releases
 
 | Package | Version | Notes |
 |---|---|---|
-| `helmlab` (npm, PyPI) | 1.0.1 | Same outputs as 1.0.0 (Helmlab 2026); faster JavaScript and documentation changes |
-| `postcss-helmlab` (npm) | 0.3.0 | |
+| `helmlab` (npm, PyPI) | 1.0.2 | Same outputs as 1.0.0 (Helmlab 2026); documentation release |
+| `postcss-helmlab` (npm) | 0.3.1 | README only |
 
 `.github/workflows/deploy.yml` publishes to npm and PyPI (trusted publishing) when a package version changes. `.github/workflows/site.yml` deploys `site/` to helmlab.space.
 
 ## Definition
 
-Helmlab 2026 is the output of `helmlab` 1.0.0. Parameter files:
+Helmlab 2026 is the output of `helmlab` 1.0.0. Its specification is Spec Rev 1 of 2026-11-16: `spec/2026/spec.md`, published at https://helmlab.space/spec/2026/ and tagged `spec-2026-rev1`. Test vectors are in `spec/2026/vectors/`; `tools/spec/check_vectors.py` and `tools/spec/check_vectors.mjs` check the packages against them, and `tools/spec/build_site.py` generates the site page from `spec.md`.
+
+Parameter files:
 
 - GenSpace: `src/helmlab/data/gen_params.json` and `packages/helmlab-js/src/data/gen-params.json`.
 - MetricSpace: `src/helmlab/data/metric_params.json` and `packages/helmlab-js/src/data/params.json`. The JavaScript neutral-correction table is `packages/helmlab-js/src/data/neutral-lut.json`.
@@ -22,8 +24,7 @@ Helmlab 2026 is the output of `helmlab` 1.0.0. Parameter files:
 
 ## In preparation
 
-- A specification and test vectors for Helmlab 2026.
-- The documentation site at helmlab.space, with one evidence page. Performance figures will be published only there.
+- The rest of the documentation site at helmlab.space, with one evidence page. Performance figures will be published only there.
 
 ## Rules for texts in this repository
 
@@ -44,4 +45,4 @@ cd packages/postcss-helmlab && node test.js
 
 ## Other implementations
 
-Color.js 0.7.x and ColorAide implement `helmlab-metric` in its base form. color-space 3.5.0 and 3.6.0 ship the neutral-corrected form under the name `helmlab-metric`. See the README.
+Color.js 0.7.x and ColorAide implement `helmlab-metric` in its base form. color-space 3.5.0 and 3.6.0 ship the neutral-corrected form under the name `helmlab-metric`. Conformance: Section 8 of the specification.

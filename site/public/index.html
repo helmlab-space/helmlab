@@ -20,6 +20,7 @@
       <span class="wordmark">Helmlab<span class="dot">.</span></span>
     </a>
     <nav aria-label="Project pages">
+      <a href="/spec/2026/">Specification</a>
       <a href="https://github.com/helmlab-space/helmlab">GitHub</a>
       <a href="https://www.npmjs.com/package/helmlab">npm</a>
       <a href="https://pypi.org/project/helmlab/">PyPI</a>
@@ -35,7 +36,7 @@
 
   <section aria-labelledby="definition">
     <h2 id="definition">Current definition: Helmlab 2026</h2>
-    <p>Helmlab 2026 is defined by the outputs of <code>helmlab</code> 1.0.0 on npm and PyPI. <code>helmlab</code> 1.0.1 has identical outputs; only its JavaScript speed and documentation changed.</p>
+    <p>Helmlab 2026 is defined by the outputs of <code>helmlab</code> 1.0.0 on npm and PyPI; 1.0.1 and 1.0.2 give the same outputs. The <a href="/spec/2026/">specification</a> writes the definition out step by step, with test vectors and conformance levels for other implementations.</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -44,12 +45,12 @@
         <tbody>
           <tr><td><code>helmgen</code></td><td>GenSpace in Lab coordinates, for generating colors</td></tr>
           <tr><td><code>helmgenlch</code></td><td>GenSpace in LCh coordinates (lightness, chroma, hue)</td></tr>
-          <tr><td><code>helmlab-metric</code></td><td>MetricSpace, for measuring color differences</td></tr>
+          <tr><td><code>helmlab-metric</code></td><td>MetricSpace in its base form, for measuring color differences</td></tr>
           <tr><td>ΔE <code>helmlab</code></td><td>Color difference computed from <code>helmlab-metric</code> coordinates</td></tr>
+          <tr><td><code>helmlab-metric-neutral</code> (reserved)</td><td>MetricSpace with the neutral correction (<a href="/spec/2026/#appendix-b">Appendix B</a>); <code>hl.metric</code> in the <code>helmlab</code> package returns this form</td></tr>
         </tbody>
       </table>
     </div>
-    <p>A specification and test vectors for Helmlab 2026 are planned.</p>
   </section>
 
   <section aria-labelledby="install">
@@ -67,14 +68,15 @@ pip install helmlab</code></pre>
   <section aria-labelledby="issues">
     <h2 id="issues">Known issues</h2>
     <ul>
-      <li>Color.js 0.7.1 and ColorAide 8.13.1 implement <code>helmlab-metric</code> without the neutral-correction step, so their <i>a</i> and <i>b</i> values differ from those of the <code>helmlab</code> package. color-space 3.5.0 includes the step.</li>
-      <li>The paper's description of the neutral-correction step differs from the released code; see <a href="https://github.com/helmlab-space/helmlab/issues/4">helmlab#4</a>.</li>
+      <li><code>hl.metric</code> in the <code>helmlab</code> package returns the neutral-corrected form, so its <i>a</i> and <i>b</i> differ from those of Color.js and ColorAide, which implement <code>helmlab-metric</code>. color-space 3.5.0 and 3.6.0 ship the neutral-corrected form under the name <code>helmlab-metric</code>. Conformance of these libraries: <a href="/spec/2026/#section-8">Section 8</a> of the specification.</li>
+      <li>The paper differs from the reference code in places; the errata are in <a href="/spec/2026/#section-11">Section 11</a> of the specification. Known limitations of the definition: <a href="/spec/2026/#section-10">Section 10</a>.</li>
     </ul>
   </section>
 
   <section aria-labelledby="links">
     <h2 id="links">Links</h2>
     <ul>
+      <li>Specification: <a href="/spec/2026/">helmlab.space/spec/2026</a></li>
       <li>Source: <a href="https://github.com/helmlab-space/helmlab">github.com/helmlab-space/helmlab</a></li>
       <li>Packages: <a href="https://www.npmjs.com/package/helmlab">helmlab on npm</a>, <a href="https://pypi.org/project/helmlab/">helmlab on PyPI</a>, <a href="https://www.npmjs.com/package/postcss-helmlab">postcss-helmlab on npm</a></li>
       <li>Paper: <a href="https://arxiv.org/abs/2602.23010">arXiv 2602.23010</a> (v3)</li>
