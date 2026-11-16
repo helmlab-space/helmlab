@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+### Packaging
+
+- The Python package states its license as the SPDX expression `MIT` (`License-Expression` in the metadata) instead of a license table and a license classifier, which setuptools stops accepting on 2027-02-18. The build needs setuptools 77 or later. The files in the wheel do not change.
+
 ## 1.0.2 — 2026-11-12
 
 Documentation release. Outputs are bit-identical to 1.0.1 and 1.0.0.
