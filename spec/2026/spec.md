@@ -6,9 +6,9 @@
 |---|---|
 | Name | Helmlab 2026 |
 | Identifiers | `helmgen`, `helmgenlch`, `helmlab-metric`, ΔE `helmlab`; reserved: `helmlab-metric-neutral` (Appendix B) |
-| Status | Draft |
+| Status | Published |
 | Revision | Spec Rev 1 |
-| Date | Set on publication |
+| Date | 2026-11-16 |
 | Location | [helmlab.space/spec/2026](https://helmlab.space/spec/2026/); source: `spec/2026/` at tag `spec-2026-rev1` of [helmlab-space/helmlab](https://github.com/helmlab-space/helmlab/tree/spec-2026-rev1/spec/2026) |
 | Parameter files | `params/gen_params.json` sha256 `310ad1105eeec0aeb72bb8bf24185cda15f62ea8f61822dceca9d61b8a69356f`; `params/metric_params.json` sha256 `a469b93c278e1708ff32aee3308375ea0fccedac75bdeba4d3b85441e279401b` |
 | Reference code | helmlab 1.0.0 on npm and PyPI (2026-07-08), commit `96a0f16`, tag `v1.0.0` |
