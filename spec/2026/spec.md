@@ -1260,7 +1260,7 @@ Where the inputs come from (informative; the `src` field of a row and the `group
 | GenSpace in sRGB | Small separate in-gamut regions near h ≈ 260°, from the roots of the cubic in the inverse (Step GI6) | helmlab 1.0.2 README |
 | MetricSpace above white | L grows quickly: about 1.80 at Y = 3 and 19 at Y = 10. The inverse returns greys to a relative 1e-12 up to Y ≈ 17 and fails above Y ≈ 20; the neutral-corrected form only up to Y ≈ 4.3 | helmlab 1.0.2 README (L); Sections 5.5.3 and B.2 (round trip) |
 | MetricSpace inverse outside the domain | Can be ill-conditioned. A change of 1e-12 in one input coordinate moved XYZ by up to 1e25 for bright Rec.2020 magentas with Y ≤ 1, and by up to 1.9 for greys from Y ≈ 3.9 to 10.1 (both forms). The vectors mark such rows `info` | Sections 7 and 9.4 |
-| MetricSpace zero-chroma curve | L is not continuous on a curve of greyish blues (y ≈ 0.276) where the internal chroma is 0. Inside the sRGB gamut (Y from 0.01 to 0.62) the limits of L differ by up to about 0.2, and the reference returns different L for different call shapes | Section 5.5.2 |
+| MetricSpace zero-chroma curve | L is not continuous on a curve of greyish blues (y ≈ 0.276) where the internal chroma is 0. Inside the sRGB gamut (Y from 0.01 to 0.62) the limits of L differ by up to about 0.22, and the reference returns different L for different call shapes | Section 5.5.2 |
 | MetricSpace near black | The lightness axis is steep near black. ΔE `helmlab` is 0.0734 for `#010101` against `#000000` and 0.0290 for `#ffffff` against `#f7f7f7`; CIEDE2000 gives 0.157 and 1.60. Of the 3,989 colour pairs of the fitting data (Section 5.6), 7 have a colour darker than L* 10 and none has a colour lighter than L* 92.8, so below L* ≈ 10 ΔE `helmlab` rests on 7 pairs and above L* ≈ 93 on none | [helmlab#5](https://github.com/helmlab-space/helmlab/issues/5); Section 5.6 |
 | Fitting data | GenSpace was selected with CMA-ES on ColorBench v1 win counts. MetricSpace was fitted to COMBVD, MacAdam 1974 and Helmlab's Human Feedback data, and He et al. 2022 was used in model selection (Section 5.6). Figures on these datasets are in-sample. | helmlab 1.0.2 README |
 | Neutral-corrected form (Appendix B) | Greys are kept neutral only up to Y = 2 (grey chroma at most 8.0e-4). Above Y = 2 the grey chroma is 0.073 at Y = 2.59, 0.11 at Y = 3, about 0.14 for Y from 4 to 10, above 0.9 from Y ≈ 10.92 and 3.8 at Y = 100 | Appendix B; [helmlab#4](https://github.com/helmlab-space/helmlab/issues/4) |
@@ -1283,7 +1283,7 @@ The errata are listed in `errata.yaml`.
 |---|---|---|
 | K1 Editorial | Wording, links, layout | Allowed |
 | K2 Explanation | Documents existing behaviour | Allowed, with an erratum |
-| K3 Clarification | Vector outputs unchanged; a conformance status becomes clear, or the reference code changes within the level R tolerance | Allowed after 14 days' notice; new Spec Rev |
+| K3 Clarification | Vector outputs unchanged; a conformance status becomes clear, or the reference code changes within the level R tolerance | Allowed after 14 days' notice in an issue of the helmlab repository; new Spec Rev |
 | K4 Output change | Any vector output changes beyond tolerance | Not allowed; goes to the next definition |
 | K5 Registration | New vector file, conformance row, reserved identifier, or a single ΔE replacing the previous one | Allowed; new Spec Rev |
 

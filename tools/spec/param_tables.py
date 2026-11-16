@@ -9,6 +9,8 @@ import hashlib
 import json
 import sys
 
+SPACE = {"gen_params.json": "GenSpace", "metric_params.json": "MetricSpace"}
+
 
 def rows(prefix, value):
     if isinstance(value, dict):
@@ -25,7 +27,8 @@ def table(path):
     raw = open(path, "rb").read()
     params = json.loads(raw)
     sha = hashlib.sha256(raw).hexdigest()
-    out = [f"`{path.split('/')[-1]}`, sha256 `{sha}`", "", "| Parameter | Decimal | Hexadecimal |", "|---|---|---|"]
+    fname = path.split('/')[-1]
+    out = [f"{SPACE[fname]}, `params/{fname}`, sha256 `{sha}`", "", "| Parameter | Decimal | Hexadecimal |", "|---|---|---|"]
     for name, v in rows("", params):
         if isinstance(v, bool) or not isinstance(v, (int, float)):
             out.append(f"| `{name}` | `{json.dumps(v)}` | |")
